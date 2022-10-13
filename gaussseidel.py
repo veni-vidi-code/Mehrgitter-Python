@@ -77,3 +77,13 @@ if __name__ == "__main__":
         for j in range(5):
             y = next(generator)
         print((i + 1) * 5, ": ", y)
+
+    # example for Relaxationsverfahren
+    print("--------------------------------------------------")
+    w = 1.0648
+    generator = gauss_seidel_steps(A, X, B, w)
+    y = X
+    for i in range(3):
+        for j in range(5):
+            y = next(generator)
+        print((i + 1) * 5, ": ", y)
