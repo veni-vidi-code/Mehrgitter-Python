@@ -8,12 +8,12 @@ def jacobi_test(a: np.ndarray, diagonals: np.ndarray, x: np.ndarray):
     assert np.all(diagonals)
 
 
-def _jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray):
+def _jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w=1):
     diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
     d = np.diag(diagonals)  # same here
     jacobi_test(a, diagonals, x)
-    n = np.diag((1 / diagonals))
-    m = np.dot(n, (d - a))
+    n = w * np.diag((1 / diagonals))
+    m = np.identity(a.shape[0], dtype=a.dtype) - np.dot(n, a)
     nb = np.dot(n, b)
     return m, nb
 
@@ -30,42 +30,34 @@ def _jacobi_step(m: np.ndarray, nb: np.ndarray, x: np.ndarray) -> np.ndarray:
     return np.dot(m, x) + nb
 
 
-def jacobi_step(a: np.ndarray, x: np.ndarray, b: np.ndarray):
+def jacobi_step(a: np.ndarray, x: np.ndarray, b: np.ndarray, w=1):
     """
     Performs one Jacobi Step
-
-    :param b:
-    :param a:
-    :param x:
-    :return:
     """
-    m, nb = _jacobi_matrices(a, b, x)
+    m, nb = _jacobi_matrices(a, b, x, w)
     return _jacobi_step(m, nb, x)
 
 
-def jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray):
+def jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, w=1):
     """
     Generator to perform many jacobi steps
-
-    :param b:
-    :param a:
-    :param x:
-    :return:
     """
-    m, nb = _jacobi_matrices(a, b, x)
+    m, nb = _jacobi_matrices(a, b, x, w)
     y = x.copy()
     total_steps = 0
     try:
         while True:
             y = _jacobi_step(m, nb, y)
             total_steps += 1
-            yield y
+            new_w = yield y
+            if new_w is not None:
+                m, nb = _jacobi_matrices(a, b, x, new_w)
     except GeneratorExit:
         return y, total_steps
 
 
-def n_jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, n: int):
-    generator = jacobi_steps(a, x, b)
+def n_jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, n: int, w=1):
+    generator = jacobi_steps(a, x, b, w)
     for _ in range(n - 1):
         next(generator)
     y = next(generator)
