@@ -8,7 +8,7 @@ def jacobi_test(a: np.ndarray, diagonals: np.ndarray, x: np.ndarray):
     assert np.all(diagonals)
 
 
-def _jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w=1):
+def _jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w: float = 1):
     diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
     jacobi_test(a, diagonals, x)
     n = w * np.diag((1 / diagonals))
@@ -29,7 +29,7 @@ def _jacobi_step(m: np.ndarray, nb: np.ndarray, x: np.ndarray) -> np.ndarray:
     return np.dot(m, x) + nb
 
 
-def jacobi_step(a: np.ndarray, x: np.ndarray, b: np.ndarray, w=1):
+def jacobi_step(a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1):
     """
     Performs one Jacobi Step
     """
@@ -37,7 +37,7 @@ def jacobi_step(a: np.ndarray, x: np.ndarray, b: np.ndarray, w=1):
     return _jacobi_step(m, nb, x)
 
 
-def jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, w=1):
+def jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1):
     """
     Generator to perform many jacobi steps
     """
@@ -55,7 +55,7 @@ def jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, w=1):
         return y, total_steps
 
 
-def n_jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, n: int, w=1):
+def n_jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, n: int, w: float = 1):
     generator = jacobi_steps(a, x, b, w)
     for _ in range(n - 1):
         next(generator)
