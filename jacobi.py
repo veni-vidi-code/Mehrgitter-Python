@@ -8,6 +8,16 @@ def jacobi_test(a: np.ndarray, diagonals: np.ndarray, x: np.ndarray):
     assert np.all(diagonals)
 
 
+def _jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray):
+    diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
+    d = np.diag(diagonals)  # same here
+    jacobi_test(a, diagonals, x)
+    n = np.diag((1 / diagonals))
+    m = np.dot(n, (d - a))
+    nb = np.dot(n, b)
+    return m, nb
+
+
 def _jacobi_step(m: np.ndarray, nb: np.ndarray, x: np.ndarray) -> np.ndarray:
     """
     Performs jacobi step without tests
@@ -29,12 +39,8 @@ def jacobi_step(a: np.ndarray, x: np.ndarray, b: np.ndarray):
     :param x:
     :return:
     """
-    diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
-    d = np.diag(diagonals)  # same here
-    jacobi_test(a, diagonals, x)
-    n = (1 / d)
-    m = n * (d - a)
-    return _jacobi_step(m, np.dot(n, b), x)
+    m, nb = _jacobi_matrices(a, b, x)
+    return _jacobi_step(m, nb, x)
 
 
 def jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray):
@@ -46,17 +52,12 @@ def jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray):
     :param x:
     :return:
     """
-    diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
-    d = np.diag(diagonals)  # same here
-    jacobi_test(a, diagonals, x)
-    n = np.diag((1 / diagonals))
-    m = np.dot(n, (d - a))
-    n = np.dot(n, b)
+    m, nb = _jacobi_matrices(a, b, x)
     y = x.copy()
     total_steps = 0
     try:
         while True:
-            y = _jacobi_step(m, n, y)
+            y = _jacobi_step(m, nb, y)
             total_steps += 1
             yield y
     except GeneratorExit:
