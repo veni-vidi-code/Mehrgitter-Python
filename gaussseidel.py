@@ -8,11 +8,13 @@ def gauss_seidel_test(a: np.ndarray, diagonals: np.ndarray, x: np.ndarray):
     assert np.all(diagonals)
 
 
-def _gauss_seidel_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray):
-    gauss_seidel_test(a, np.diag(a), x)
-    n = np.linalg.inv(np.tril(a))
-    m = - np.dot(n, np.triu(a, 1))
-    return m, np.dot(n, b)
+def _gauss_seidel_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w=1):
+    diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
+    d = np.diag(diagonals)  # same here
+    gauss_seidel_test(a, diagonals, x)
+    n = np.linalg.inv(d + w * np.tril(a, -1))
+    m = np.dot(n, ((1 - w) * d) - w * np.triu(a, 1))
+    return m, w * np.dot(n, b)
 
 
 def _gauss_seidel_step(m: np.ndarray, nb: np.ndarray, x: np.ndarray) -> np.ndarray:
@@ -27,42 +29,34 @@ def _gauss_seidel_step(m: np.ndarray, nb: np.ndarray, x: np.ndarray) -> np.ndarr
     return np.dot(m, x) + nb
 
 
-def gauss_seidel_step(a: np.ndarray, x: np.ndarray, b: np.ndarray):
+def gauss_seidel_step(a: np.ndarray, x: np.ndarray, b: np.ndarray, w=1):
     """
     Performs one gauss_seidel Step
-
-    :param b:
-    :param a:
-    :param x:
-    :return:
     """
-    m, nb = _gauss_seidel_matrices(a, b, x)
+    m, nb = _gauss_seidel_matrices(a, b, x, w)
     return _gauss_seidel_step(m, nb, x)
 
 
-def gauss_seidel_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray):
+def gauss_seidel_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, w=1):
     """
     Generator to perform many gauss_seidel steps
-
-    :param b:
-    :param a:
-    :param x:
-    :return:
     """
-    m, nb = _gauss_seidel_matrices(a, b, x)
+    m, nb = _gauss_seidel_matrices(a, b, x, w)
     y = x.copy()
     total_steps = 0
     try:
         while True:
             y = _gauss_seidel_step(m, nb, y)
             total_steps += 1
-            yield y
+            new_w = yield y
+            if new_w is not None:
+                m, nb = _gauss_seidel_matrices(a, b, x, new_w)
     except GeneratorExit:
         return y, total_steps
 
 
-def n_gauss_seidel_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, n: int):
-    generator = gauss_seidel_steps(a, x, b)
+def n_gauss_seidel_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, n: int, w=1):
+    generator = gauss_seidel_steps(a, x, b, w)
     for _ in range(n - 1):
         next(generator)
     y = next(generator)
