@@ -71,3 +71,18 @@ def n_jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, n: int):
     y = next(generator)
     generator.close()
     return y
+
+
+if __name__ == "__main__":
+    # Example from the book
+    A = np.array([[0.7, -0.4], [-0.2, 0.5]])
+    X = np.array([21, -19])
+    B = np.array([0.3, 0.3])
+    M, NB = _jacobi_matrices(A, B, X)
+    print(M)
+    generator = jacobi_steps(A, X, B)
+    y = X
+    for i in range(4):
+        for j in range(15):
+            y = next(generator)
+        print((i + 1) * 15, ": ", y)
