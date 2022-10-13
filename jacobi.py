@@ -10,7 +10,6 @@ def jacobi_test(a: np.ndarray, diagonals: np.ndarray, x: np.ndarray):
 
 def _jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w=1):
     diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
-    d = np.diag(diagonals)  # same here
     jacobi_test(a, diagonals, x)
     n = w * np.diag((1 / diagonals))
     m = np.identity(a.shape[0], dtype=a.dtype) - np.dot(n, a)
