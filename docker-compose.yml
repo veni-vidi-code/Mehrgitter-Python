@@ -1,0 +1,13 @@
+services:
+  mehrkoerpergunicorn:
+    image: mehrkoerpergunicorn
+    build: ./src
+    expose:
+      - 8000
+  nginx:
+    image: mehrkoerpernginx
+    build: ./nginx
+    ports:
+      - 1337:80
+    depends_on:
+      - mehrkoerpergunicorn
