@@ -1,11 +1,12 @@
 import numpy as np
 
-from mehrgitterhelper import MATRIXFOLGENFUNKTION
+from .mehrgitterhelper import MATRIXFOLGENFUNKTION
 
 
 def standard_schrittweitenfolge(stufenindex_l: int) -> np.ndarray:
     assert stufenindex_l >= 0
-    return np.linspace(0, 1, 1 + (2 ** (stufenindex_l + 1)))
+    h = 2 ** (-(stufenindex_l + 1))
+    return np.arange(start=h, stop=1, step=h, dtype=np.float64)
 
 
 class Gitterhierachie:
