@@ -1,18 +1,18 @@
 services:
-  mehrkoerpergunicorn:
-    image: mehrkoerpergunicorn
+  gunicorn:
+    image: gunicorn
     build: ./src
     expose:
       - 8000
     restart: unless-stopped
   nginx:
-    image: mehrkoerpernginx
+    image: nginx
     build: ./nginx
     ports:
       - "80:80"
       - "443:443"
     depends_on:
-      - mehrkoerpergunicorn
+      - gunicorn
     restart: unless-stopped
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
