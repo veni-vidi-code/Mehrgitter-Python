@@ -30,7 +30,7 @@ def change_gitter(l, j):
     y_linear = linear_gitter.get_restriktionsmatrix(l) @ y
     y_trivial = trivial_gitter.get_restriktionsmatrix(l) @ y
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers', name='origonal'))
+    fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers', name='original'))
     fig.add_trace(go.Scatter(x=x2, y=y_trivial, mode='lines+markers', name='trivial'))
     fig.add_trace(go.Scatter(x=x2, y=y_linear, mode='lines+markers', name='linear'))
     return fig
