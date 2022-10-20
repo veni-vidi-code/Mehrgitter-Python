@@ -8,14 +8,15 @@ allowed_users = {
 }
 
 server = flask.Flask(__name__)
-app = Dash(__name__, use_pages=True, server=server)
+app = server
+dashapp = Dash(__name__, use_pages=True, server=server)
 
 """auth = dash_auth.BasicAuth(
     app,
     allowed_users
 )"""
 
-app.layout = html.Div([
+dashapp.layout = html.Div([
     html.H1('Demo Mehrkörperverfahren'),
 
     html.Div(
@@ -33,4 +34,4 @@ app.layout = html.Div([
 ])
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    dashapp.run(debug=True)
