@@ -2,7 +2,6 @@ import dash
 from dash import html, dcc, callback, Input, Output, State
 from implementations import mehrgitterhelper
 import plotly.graph_objects as go
-from dash.development.base_component import Component
 
 from implementations.Gitter import LINEAR_GITTERHIERACHIE, TRIVIAL_GITTERHIERACHIE
 from pages.cache import cache
