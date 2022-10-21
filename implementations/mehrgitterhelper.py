@@ -16,11 +16,13 @@ def dirichlect_randwert_a_l(stufenindex_l: int) -> np.ndarray:
     return a_l
 
 
-def fourier_mode(stufenindex_l: int, mode: int) -> np.ndarray:
+def fourier_mode(stufenindex_l: int, mode: int, scale: bool = False) -> np.ndarray:
     assert stufenindex_l >= 0
     n_l = (2 ** (stufenindex_l + 1)) - 1
     h_l = 1 / (n_l + 1)
     assert mode > 0
     assert mode <= n_l
-    x = math.sqrt(2 * h_l) * np.sin(mode * np.pi * h_l * np.arange(1, n_l + 1, dtype=np.float64))
+    x = np.sin(mode * np.pi * h_l * np.arange(1, n_l + 1, dtype=np.float64))
+    if not scale:
+        x *= math.sqrt(2 * h_l)
     return x
