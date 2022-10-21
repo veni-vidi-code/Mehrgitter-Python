@@ -1,5 +1,4 @@
 from implementations.mehrgitterhelper import fourier_mode, dirichlect_randwert_a_l
-from implementations.jacobi import jacobi_steps
 
 import numpy as np
 import dash
@@ -9,7 +8,7 @@ import plotly.graph_objects as go
 
 from pages.cache import cache
 
-dash.register_page(__name__, name="4-8")
+dash.register_page(__name__, name="Dämpfung Jacobi")
 
 layout = html.Div(children=[
     html.H1(children='Iterationen relaxiertes Jacobi Verfahren'),

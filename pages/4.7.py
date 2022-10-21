@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 dash.register_page(__name__, name="Eigenwerte")
 
 layout = html.Div(children=[
-    html.H1(children='Eigenwerte'),
+    html.H1(children='Eigenwerte Fourier Moden'),
     html.Div([
         dcc.Checklist(
             options=[
