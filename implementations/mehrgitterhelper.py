@@ -26,3 +26,12 @@ def fourier_mode(stufenindex_l: int, mode: int, scale: bool = False) -> np.ndarr
     if not scale:
         x *= math.sqrt(2 * h_l)
     return x
+
+
+def eigenvalues(stufenindex_l: int, mode: int, w: float) -> np.ndarray:
+    assert stufenindex_l >= 0
+    n_l = (2 ** (stufenindex_l + 1)) - 1
+    assert mode > 0
+    assert mode <= n_l
+    h_l = 1 / (n_l + 1)
+    return 1 - 4 * w * np.sin(mode * np.pi * h_l / 2) ** 2
