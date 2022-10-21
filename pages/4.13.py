@@ -4,6 +4,7 @@ from implementations import mehrgitterhelper
 import plotly.graph_objects as go
 
 from implementations.Gitter import LINEAR_GITTERHIERACHIE, TRIVIAL_GITTERHIERACHIE
+from pages.cache import cache
 
 dash.register_page(__name__, name="Fourier Moden")
 
@@ -21,6 +22,7 @@ layout = html.Div(children=[
 
 
 @callback(Output('fourier-modes', 'figure'), Input('l', 'value'), Input('j', 'value'))
+@cache.memoize()
 def change_gitter(stufenindex_l, j):
     y = mehrgitterhelper.fourier_mode(stufenindex_l, j)
     linear_gitter = LINEAR_GITTERHIERACHIE

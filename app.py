@@ -1,7 +1,7 @@
 import flask
 from dash import Dash, html, dcc
 import dash
-#import dash_auth
+from pages.cache import cache
 
 allowed_users = {
     'numaseminar': 'MehrGitterVerfahren2022'
@@ -10,6 +10,7 @@ allowed_users = {
 server = flask.Flask(__name__)
 app = server
 dashapp = Dash(__name__, use_pages=True, server=server)
+cache.init_app(server)
 
 """auth = dash_auth.BasicAuth(
     app,
