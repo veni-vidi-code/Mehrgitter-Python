@@ -2,6 +2,7 @@ import dash
 from dash import html, dcc, callback, Input, Output, State
 from implementations import mehrgitterhelper
 import plotly.graph_objects as go
+from dash.development.base_component import Component
 
 from implementations.Gitter import LINEAR_GITTERHIERACHIE, TRIVIAL_GITTERHIERACHIE
 from pages.cache import cache
@@ -12,7 +13,7 @@ layout = html.Div(children=[
     html.H1(children='Fourier Moden'),
     html.Div([
         "Gitter (l): ",
-        dcc.Slider(1, 5, 1, value=3, id="l"),
+        dcc.Slider(1, 10, 1, value=3, id="l"),
         "Wellenzahl (j): ",
         dcc.Slider(1, 20, 1, value=1, id="j"),
         "Skalieren (für Prolongation empfohlen!)",
@@ -66,13 +67,16 @@ def change_gitter(stufenindex_l, j, scale, direction):
     return fig
 
 
-@callback(Output('j', 'max'), Output('j', 'value'), Input('l', 'value'), State('j', 'value'),
-          Input('richtung', 'value'))
+@callback(Output('j', 'max'), Output('j', 'value'), Output('j', "tooltip"), Output('j', "marks"),
+          Input('l', 'value'), State('j', 'value'), Input('richtung', 'value'))
 def change_j_max(stufenindex_l, j, direction):
     if direction == 'r':
         n = (2 ** (stufenindex_l + 1)) - 1
     else:
         n = (2 ** stufenindex_l) - 1
-    return n, min(n, j)
+    if stufenindex_l > 5:
+        return n, min(n, j), {"placement": "bottom", "always_visible": True}, None
+    else:
+        return n, min(n, j), None, {}
 
 
