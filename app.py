@@ -9,7 +9,7 @@ allowed_users = {
 
 server = flask.Flask(__name__)
 app = server
-dashapp = Dash(__name__, use_pages=True, server=server)
+dashapp = Dash(__name__, use_pages=True, server=server, serve_locally=False)
 cache.init_app(server)
 
 """auth = dash_auth.BasicAuth(
