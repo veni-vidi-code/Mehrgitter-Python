@@ -1,4 +1,4 @@
-from implementations.mehrgitterhelper import fourier_mode, dirichlect_randwert_a_l
+from implementations.dirichlect import get_jacobi_generator, N_l
 
 import numpy as np
 import dash
@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 
 from pages.cache import cache
 
-dash.register_page(__name__, name="Dämpfung Jacobi")
+dash.register_page(__name__, name="Iterationen Dämpfung Jacobi")
 
 layout = html.Div(children=[
     html.H1(children='Iterationen relaxiertes Jacobi Verfahren'),
@@ -23,7 +23,7 @@ layout = html.Div(children=[
         "Gitter (l): ",
         dcc.Slider(1, 5, 1, value=3, id="l-4-8"),
         "Dämpfung (w): ",
-        dcc.Slider(0, 0.5, step=0.000001, marks={
+        dcc.Slider(0, 0.5, step=1e-6, marks={
             1: '1',
             0.5: '1/2',
             1 / 3: '1/3',
@@ -39,14 +39,12 @@ layout = html.Div(children=[
 
 
 def find_needed_iters(stufenindex_l, j, w: float = 0.5, limit: float = 1e-2):
-    e = fourier_mode(stufenindex_l, j)
-    a = dirichlect_randwert_a_l(stufenindex_l)
-    h = 1 / (2 ** (stufenindex_l + 1))
-    m = np.identity(a.shape[0], dtype=a.dtype) - w * h * h * a
+    generator = get_jacobi_generator(stufenindex_l, j, w)
+    e = next(generator)
     eps = np.linalg.norm(e)
     i = 0
     while eps > limit:
-        e = np.dot(m, e)
+        e = next(generator)
         eps = np.linalg.norm(e)
         i += 1
         if i > 500:
@@ -56,7 +54,7 @@ def find_needed_iters(stufenindex_l, j, w: float = 0.5, limit: float = 1e-2):
 
 @cache.memoize()
 def _iter_trace(stufenindex_l, w):
-    x = list(range(1, (2 ** (stufenindex_l + 1))))
+    x = list(range(1, N_l(stufenindex_l) + 1))
     y = [find_needed_iters(stufenindex_l, i, w) for i in x]
     return x, y
 
@@ -85,4 +83,4 @@ def snapping(value):
     if value:
         return None
     else:
-        return 0.000001
+        return 1e-6

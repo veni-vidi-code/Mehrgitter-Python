@@ -1,9 +1,10 @@
 import dash
 from dash import html, dcc, callback, Input, Output, State
-from implementations import mehrgitterhelper
+from implementations import dirichlect
 import plotly.graph_objects as go
 
 from implementations.Gitter import LINEAR_GITTERHIERACHIE, TRIVIAL_GITTERHIERACHIE
+from implementations.dirichlect import N_l
 from pages.cache import cache
 
 dash.register_page(__name__, name="Fourier Moden")
@@ -49,7 +50,7 @@ def change_gitter(stufenindex_l, j, scale, direction):
     fig = go.Figure()
     linear_gitter = LINEAR_GITTERHIERACHIE
     x = linear_gitter.get_gitterfolge(stufenindex_l)
-    e_l_j = mehrgitterhelper.fourier_mode(stufenindex_l, j, scale)
+    e_l_j = dirichlect.fourier_mode(stufenindex_l, j, scale)
     fig.add_trace(go.Scatter(x=x, y=e_l_j, mode='lines+markers', name='e_l,j (original)'))
     trivial_gitter = TRIVIAL_GITTERHIERACHIE
     if direction == 'r':
@@ -59,7 +60,7 @@ def change_gitter(stufenindex_l, j, scale, direction):
         fig.add_trace(go.Scatter(x=x2, y=y_trivial, mode='lines+markers', name='trivial'))
         fig.add_trace(go.Scatter(x=x2, y=y_linear, mode='lines+markers', name='linear'))
     else:
-        e_l_minus_1_j = mehrgitterhelper.fourier_mode(stufenindex_l - 1, j, scale)
+        e_l_minus_1_j = dirichlect.fourier_mode(stufenindex_l - 1, j, scale)
         y_linear = linear_gitter.get_prolongationsmatrix(stufenindex_l) @ e_l_minus_1_j
         fig.add_trace(go.Scatter(x=x, y=y_linear, mode='lines+markers', name='P*e_l-1,j'))
 
@@ -70,7 +71,7 @@ def change_gitter(stufenindex_l, j, scale, direction):
           Input('l', 'value'), State('j', 'value'), Input('richtung', 'value'))
 def change_j_max(stufenindex_l, j, direction):
     if direction == 'r':
-        n = (2 ** (stufenindex_l + 1)) - 1
+        n = N_l(stufenindex_l)
     else:
         n = (2 ** stufenindex_l) - 1
     if stufenindex_l > 5:

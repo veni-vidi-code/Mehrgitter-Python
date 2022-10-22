@@ -1,7 +1,9 @@
 import dash
 from dash import html, dcc, callback, Input, Output, State, ctx
-from implementations import mehrgitterhelper
+from implementations import dirichlect
 import plotly.graph_objects as go
+
+from implementations.dirichlect import N_l
 
 dash.register_page(__name__, name="Eigenwerte")
 
@@ -18,7 +20,7 @@ layout = html.Div(children=[
         "Gitter (l): ",
         dcc.Slider(1, 5, 1, value=3, id="l"),
         "Dämpfung (w): ",
-        dcc.Slider(0, 1, step=0.000001, marks={
+        dcc.Slider(0, 1, step=1e-6, marks={
             1: '1',
             0.5: '1/2',
             1 / 3: '1/3',
@@ -34,8 +36,8 @@ layout = html.Div(children=[
 
 
 def _add_eigenvalues_trace(stufenindex_l, w, fig):
-    x = list(range(1, (2 ** (stufenindex_l + 1))))
-    y = [mehrgitterhelper.eigenvalues(stufenindex_l, i, w) for i in x]
+    x = list(range(1, N_l(stufenindex_l) + 1))
+    y = [dirichlect.eigenvalues(stufenindex_l, i, w) for i in x]
     fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers', name=f'w={w}'))
 
 
@@ -58,4 +60,4 @@ def snapping(value):
     if value:
         return None
     else:
-        return 0.000001
+        return 1e-6
