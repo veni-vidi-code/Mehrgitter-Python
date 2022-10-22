@@ -2,3 +2,4 @@ numpy
 dash
 gunicorn
 Flask-Caching
+orjson
