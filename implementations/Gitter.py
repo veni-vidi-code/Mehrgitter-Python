@@ -28,7 +28,7 @@ def _three_elem_restriction(elems: list[float]):
     def restriction(stufenindex_l: int) -> np.ndarray:
         assert stufenindex_l >= 0
         n_l = N_l(stufenindex_l)
-        n_l_minus_1 = (2 ** (stufenindex_l)) - 1
+        n_l_minus_1 = N_l(stufenindex_l - 1)
         x = np.zeros((n_l_minus_1, n_l))
         for i in range(n_l_minus_1):
             for j in range(3):
@@ -44,7 +44,7 @@ def _three_elem_prolongation(elems: list[float]):
     def prolongation(stufenindex_l: int) -> np.ndarray:
         assert stufenindex_l >= 0
         n_l = N_l(stufenindex_l)
-        n_l_minus_1 = (2 ** (stufenindex_l)) - 1
+        n_l_minus_1 = N_l(stufenindex_l - 1)
         x = np.zeros((n_l, n_l_minus_1))
         for i in range(n_l_minus_1):
             for j in range(3):

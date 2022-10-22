@@ -1,32 +1,15 @@
 import numpy as np
 
-
-def jacobi_test(a: np.ndarray, diagonals: np.ndarray, x: np.ndarray):
-    assert a.ndim == 2
-    assert diagonals.ndim == 1
-    assert x.ndim == 1
-    assert np.all(diagonals)
+from implementations.helpers import iter_step, iter_tests, iter_steps_generatordef, n_steps_of_generator
 
 
 def _jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w: float = 1):
     diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
-    jacobi_test(a, diagonals, x)
+    iter_tests(a, diagonals, x)
     n = w * np.diag((1 / diagonals))
     m = np.identity(a.shape[0], dtype=a.dtype) - np.dot(n, a)
     nb = np.dot(n, b)
     return m, nb
-
-
-def _jacobi_step(m: np.ndarray, nb: np.ndarray, x: np.ndarray) -> np.ndarray:
-    """
-    Performs jacobi step without tests
-
-    :param m: D^-1(D-A)
-    :param n: D^-1
-    :param x: x_{m}
-    :return: x_{m+1}
-    """
-    return np.dot(m, x) + nb
 
 
 def jacobi_step(a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1):
@@ -34,34 +17,19 @@ def jacobi_step(a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1):
     Performs one Jacobi Step
     """
     m, nb = _jacobi_matrices(a, b, x, w)
-    return _jacobi_step(m, nb, x)
+    return iter_step(m, nb, x)
 
 
 def jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1):
     """
     Generator to perform many jacobi steps
     """
-    m, nb = _jacobi_matrices(a, b, x, w)
-    y = x.copy()
-    total_steps = 0
-    try:
-        while True:
-            y = _jacobi_step(m, nb, y)
-            total_steps += 1
-            new_w = yield y
-            if new_w is not None:
-                m, nb = _jacobi_matrices(a, b, x, new_w)
-    except GeneratorExit:
-        return y, total_steps
+    return iter_steps_generatordef(_jacobi_matrices, a, x, b, w)
 
 
 def n_jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, n: int, w: float = 1):
     generator = jacobi_steps(a, x, b, w)
-    for _ in range(n - 1):
-        next(generator)
-    y = next(generator)
-    generator.close()
-    return y
+    return n_steps_of_generator(generator, n)
 
 
 if __name__ == "__main__":
