@@ -3,13 +3,16 @@ import numpy as np
 from implementations.helpers import iter_step, iter_tests, iter_steps_generatordef, n_steps_of_generator
 
 
-def _gauss_seidel_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w: float = 1):
+def _gauss_seidel_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w: float = 1, nb: bool = True):
     diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
     d = np.diag(diagonals)  # same here
     iter_tests(a, diagonals, x)
     n = np.linalg.inv(d + w * np.tril(a, -1))
     m = np.dot(n, ((1 - w) * d) - w * np.triu(a, 1))
-    return m, w * np.dot(n, b)
+    if nb:
+        return m, w * np.dot(n, b)
+    else:
+        return w * n
 
 
 def gauss_seidel_step(a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1):

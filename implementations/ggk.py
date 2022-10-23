@@ -17,7 +17,7 @@ def ggk_matrices(stufenindex_l: int, *, a_func: Callable[[int], np.ndarray] = di
     a_l_minus_1 = a_func(stufenindex_l - 1)
     a_l = a_func(stufenindex_l)
 
-    def _ggk_matrices(a: Any, f: np.ndarray, x: Any, w: float = 1) -> Tuple[np.ndarray, np.ndarray]:
+    def _ggk_matrices(a: Any, f: np.ndarray, x: Any, w: float = 1, nb: bool = True) -> Tuple[np.ndarray, np.ndarray]:
         """
         Note: a, w, x will get ignored. They are only there to make the interface
         compatible with iter_steps_generatordef
@@ -26,7 +26,8 @@ def ggk_matrices(stufenindex_l: int, *, a_func: Callable[[int], np.ndarray] = di
             raise ValueError("GGK does not support relaxation")
         n = np.dot(p_l, np.dot(np.linalg.inv(a_l_minus_1), r_l))
         m = np.identity(a_l.shape[0], dtype=a_l.dtype) - np.dot(n, a_l)
-        nb = np.dot(n, f)
+        if nb:
+            nb = np.dot(n, f)
         return m, nb
 
     return _ggk_matrices

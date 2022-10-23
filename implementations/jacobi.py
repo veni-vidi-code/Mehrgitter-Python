@@ -3,12 +3,13 @@ import numpy as np
 from implementations.helpers import iter_step, iter_tests, iter_steps_generatordef, n_steps_of_generator
 
 
-def _jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w: float = 1):
+def _jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w: float = 1, nb: bool = True):
     diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
     iter_tests(a, diagonals, x)
     n = w * np.diag((1 / diagonals))
     m = np.identity(a.shape[0], dtype=a.dtype) - np.dot(n, a)
-    nb = np.dot(n, b)
+    if nb:
+        nb = np.dot(n, b)
     return m, nb
 
 
