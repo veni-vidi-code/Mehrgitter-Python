@@ -28,8 +28,7 @@ layout = html.Div(children=[
             0.5: '1/2',
             1 / 3: '1/3',
             1 / 4: '1/4',
-            1 / 8: '1/8',
-            0: '0'
+            1 / 8: '1/8'
         }, value=0.5, id="w-4-8", tooltip={"placement": "bottom"}),
         html.Button(id='submit-button-4-8', children='Hinzufügen', n_clicks=0),
     ]),
