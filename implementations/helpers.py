@@ -1,3 +1,5 @@
+from __future__ import annotations  # back support for python 3.8 & 3.9
+
 import numpy as np
 
 from typing import Callable, Tuple
@@ -20,12 +22,14 @@ def iter_tests(a: np.ndarray, diagonals: np.ndarray, x: np.ndarray):
 
 
 def iter_steps_generatordef(matrices: Callable[[np.ndarray, np.ndarray, np.ndarray, float],
-                                               Tuple[np.ndarray, np.ndarray]],
+                                               Tuple[np.ndarray, np.ndarray]] | Tuple[np.ndarray, np.ndarray],
                             a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1):
     """
     Generator that performs many steps
     """
-    m, nb = matrices(a, b, x, w)
+    set_matrices = isinstance(matrices, tuple)
+
+    m, nb = matrices(a, b, x, w) if not set_matrices else matrices
     y = x.copy()
     total_steps = 0
     try:
@@ -34,12 +38,15 @@ def iter_steps_generatordef(matrices: Callable[[np.ndarray, np.ndarray, np.ndarr
             total_steps += 1
             new_w = yield y
             if new_w is not None:
-                m, nb = matrices(a, b, x, new_w)
+                if set_matrices:
+                    raise ValueError("Cannot change w if matrices are given")
+                else:
+                    m, nb = matrices(a, b, x, new_w)
     except GeneratorExit:
         return y, total_steps
 
 
-def n_steps_of_generator(generator, n):
+def n_steps_of_generator(generator, n: int) -> np.ndarray:
     """
     Performs n steps of a generator, returns the last result and closes the generator
     """

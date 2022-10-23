@@ -26,6 +26,7 @@ layout = html.Div(children=[
 @callback(Output('fourier-modes-4-16', 'figure'), Input('l-4-16', 'value'), Input('j-4-16', 'value'))
 @cache.memoize()
 def change_gitter(stufenindex_l, j):
+    # Dies würde sich auch effizienter mit Satz 4.53 berechnen lassen, aber zur Demonstration reicht das hier.
     fig = go.Figure()
     e_l_j = dirichlect.fourier_mode(stufenindex_l, j, False)
     y = ggk_Psi_l(stufenindex_l, e_l_j)
