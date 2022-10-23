@@ -6,6 +6,9 @@ from dash import html, dcc, callback, Input, Output, State, ALL
 
 import plotly.graph_objects as go
 
+from implementations.ggk import ggk_step
+from implementations.jacobi import jacobi_matrices
+from implementations.zweigitter import zweigitter_step
 from pages.cache import cache
 
 dash.register_page(__name__, name="Fehler Dämpfung Jacobi")
@@ -58,7 +61,7 @@ layout = html.Div(children=[
 ])
 
 
-def fault_after_steps(stufenindex_l, w: float, start: np.ndarray, steps: int = 2):
+def fault_after_steps_jacobi(stufenindex_l, w: float, start: np.ndarray, steps: int = 2):
     if start is None:
         start = example_startfault
     generator = get_jacobi_generator(stufenindex_l, 0, w, start)
@@ -68,11 +71,17 @@ def fault_after_steps(stufenindex_l, w: float, start: np.ndarray, steps: int = 2
 @cache.memoize()
 def _generate_fig(stufenindex_l, w, start: np.ndarray):
     assert start.size == N_l(stufenindex_l)
-    faults = fault_after_steps(stufenindex_l, w, start, 2)
+    faults = fault_after_steps_jacobi(stufenindex_l, w, start, 2)
+
+    # for performance improvements this uses the already known result from faults
+    y = zweigitter_step(stufenindex_l, 0, 2, start, faults[2], psi_vor_matrice=jacobi_matrices, w1=2 * w,
+                        w2=2 * w)
+
     fig = go.Figure()
     x = np.arange(1, N_l(stufenindex_l) + 1)
     for i in range(len(faults)):
         fig.add_trace(go.Scatter(x=x, y=faults[i], name=f"Schritt {i}"))
+    fig.add_trace(go.Scatter(x=x, y=y, name="Zweigitter"))
     return fig
 
 

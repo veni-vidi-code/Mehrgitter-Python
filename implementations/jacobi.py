@@ -3,7 +3,7 @@ import numpy as np
 from implementations.helpers import iter_step, iter_tests, iter_steps_generatordef, n_steps_of_generator
 
 
-def _jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w: float = 1, nb: bool = True):
+def jacobi_matrices(a: np.ndarray, b: np.ndarray, x: np.ndarray, w: float = 1, nb: bool = True):
     diagonals = np.diag(a)  # depending on the version used this might be a view. do not write to this!
     iter_tests(a, diagonals, x)
     n = w * np.diag((1 / diagonals))
@@ -17,7 +17,7 @@ def jacobi_step(a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1):
     """
     Performs one Jacobi Step
     """
-    m, nb = _jacobi_matrices(a, b, x, w)
+    m, nb = jacobi_matrices(a, b, x, w)
     return iter_step(m, nb, x)
 
 
@@ -25,7 +25,7 @@ def jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1):
     """
     Generator to perform many jacobi steps
     """
-    return iter_steps_generatordef(_jacobi_matrices, a, x, b, w)
+    return iter_steps_generatordef(jacobi_matrices, a, x, b, w)
 
 
 def n_jacobi_steps(a: np.ndarray, x: np.ndarray, b: np.ndarray, n: int, w: float = 1):
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     A = np.array([[0.7, -0.4], [-0.2, 0.5]], np.float64)
     X = np.array([21, -19], np.float64)
     B = np.array([0.3, 0.3], np.float64)
-    M, NB = _jacobi_matrices(A, B, X)
+    M, NB = jacobi_matrices(A, B, X)
     print(M)
     generator = jacobi_steps(A, X, B)
     y = X

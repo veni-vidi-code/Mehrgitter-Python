@@ -27,8 +27,8 @@ def ggk_matrices(stufenindex_l: int, *, a_func: Callable[[int], np.ndarray] = di
         n = np.dot(p_l, np.dot(np.linalg.inv(a_l_minus_1), r_l))
         m = np.identity(a_l.shape[0], dtype=a_l.dtype) - np.dot(n, a_l)
         if nb:
-            nb = np.dot(n, f)
-        return m, nb
+            return m, np.dot(n, f)
+        return m, n
 
     return _ggk_matrices
 
