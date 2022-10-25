@@ -35,7 +35,9 @@ dashapp.layout = html.Div([
     dbc.Container([
         navbar,
         jacobi_gausseidel_switch,
-        dash.page_container], fluid=True),
+        dash.page_container,
+        html.Footer("© Tom Mucke", className="fixed-bottom")],
+        fluid=True),
 ])
 
 

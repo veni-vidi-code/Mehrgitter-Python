@@ -4,7 +4,7 @@ from dash import html, dcc, callback, Input, Output, State, ctx
 from Utils.components import snipping_switch
 from implementations import dirichlect
 import plotly.graph_objects as go
-
+import dash_bootstrap_components as dbc
 from implementations.dirichlect import N_l
 
 dash.register_page(__name__, name="Eigenwerte", order=1)
@@ -24,7 +24,13 @@ layout = html.Div(children=[
             1 / 8: '1/8',
             0: '0'
         }, value=0.5, id="w", tooltip={"placement": "bottom"}),
-        html.Button(id='submit-button', children='Hinzufügen', n_clicks=0),
+        dbc.Button(
+            "Hinzufügen",
+            id="submit-button",
+            color="info",
+            outline=True,
+            n_clicks=0,
+        ),
     ]),
     html.Br(),
     dcc.Graph(id='eigenvalues'),
@@ -53,7 +59,6 @@ def add_eigenvalues(n_clicks, stufenindex_l, w, fig, mode):
 
 @callback(Output('w', 'step'), Input('snapping', 'on'))
 def snapping(value):
-    print(value)
     if value:
         return None
     else:

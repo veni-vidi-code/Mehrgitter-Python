@@ -4,7 +4,7 @@ from implementations.dirichlect import get_jacobi_generator, N_l
 import numpy as np
 import dash
 from dash import html, dcc, callback, Input, Output, State, ctx
-
+import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 from pages.cache import cache
@@ -25,7 +25,13 @@ layout = html.Div(children=[
             1 / 4: '1/4',
             1 / 8: '1/8'
         }, value=0.5, id="w-4-8", tooltip={"placement": "bottom"}),
-        html.Button(id='submit-button-4-8', children='Hinzufügen', n_clicks=0),
+        dbc.Button(
+            "Hinzufügen",
+            id="submit-button-4-8",
+            color="info",
+            outline=True,
+            n_clicks=0,
+        ),
     ]),
     html.Br(),
     dcc.Graph(id='iter-graph-4-8'),
