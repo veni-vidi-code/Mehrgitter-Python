@@ -23,9 +23,10 @@ layout = html.Div(children=[
 ])
 
 
-@callback(Output('fourier-modes-4-16', 'figure'), Input('l-4-16', 'value'), Input('j-4-16', 'value'))
+@callback(Output('fourier-modes-4-16', 'figure'), Input('l-4-16', 'value'), Input('j-4-16', 'value'),
+          Input('tabs-jacobi-gausseidel-switch', 'value'))
 @cache.memoize()
-def change_gitter(stufenindex_l, j):
+def change_gitter(stufenindex_l, j, mode):
     # Dies würde sich auch effizienter mit Satz 4.53 berechnen lassen, aber zur Demonstration reicht das hier.
     fig = go.Figure()
     e_l_j = dirichlect.fourier_mode(stufenindex_l, j, False)
@@ -46,5 +47,3 @@ def change_j_max(stufenindex_l, j):
         return n, min(n, j), {"placement": "bottom", "always_visible": True}, None
     else:
         return n, min(n, j), None, {}
-
-

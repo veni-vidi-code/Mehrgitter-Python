@@ -1,34 +1,40 @@
 import flask
-from dash import Dash, html, dcc, Output, Input
+from dash import Dash, html, dcc
 import dash
-from pages.cache import cache
 
+from Utils.components import jacobi_gausseidel_switch
+from pages.cache import cache
+import dash_bootstrap_components as dbc
 
 server = flask.Flask(__name__)
 app = server
-dashapp = Dash(__name__, use_pages=True, server=server, serve_locally=False)
+dashapp = Dash(__name__, use_pages=True, server=server, serve_locally=False,
+               external_stylesheets=[dbc.themes.BOOTSTRAP])
 cache.init_app(server)
 
+navbar = dbc.NavbarSimple(
+    dbc.DropdownMenu(
+        [
+            dbc.DropdownMenuItem(page["name"], href=page["path"])
+            for page in dash.page_registry.values()
+            if page["module"] != "pages.not_found_404"
+        ],
+        nav=True,
+        in_navbar=True,
+        label="Seite wechseln",
+    ),
+    brand="Demo Mehrkörperverfahren",
+    color="#abccfb",
+    className="main-navbar",
+    fluid=True,
+)
 
 dashapp.layout = html.Div([
-    dcc.Location(id='url', refresh=True),
-    html.H1('Demo Mehrkörperverfahren'),
-
-    html.Div(
-        [
-            dcc.Dropdown(id='page_dd',
-                         options=[{'label': page['name'], 'value': page["relative_path"]}
-                                  for page in dash.page_registry.values() if page["relative_path"] != "/"]),
-        ]
-    ),
-
-    dash.page_container
+    dbc.Container([
+        navbar,
+        jacobi_gausseidel_switch,
+        dash.page_container], fluid=True),
 ])
-
-
-@dashapp.callback(Output("url", "pathname"), Input("page_dd", "value"))
-def update_url_on_dropdown_change(dropdown_value):
-    return dropdown_value
 
 
 if __name__ == '__main__':

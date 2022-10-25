@@ -1,3 +1,4 @@
+from Utils.components import snipping_switch
 from implementations.dirichlect import get_jacobi_generator, N_l
 
 import numpy as np
@@ -13,13 +14,7 @@ dash.register_page(__name__, name="Iterationen Dämpfung Jacobi")
 layout = html.Div(children=[
     html.H1(children='Iterationen relaxiertes Jacobi Verfahren'),
     html.Div([
-        dcc.Checklist(
-            options=[
-                {'label': 'Easy Snapping', 'value': 'y'}
-            ],
-            value=['y'],
-            id="snapping-4-8"
-        ),
+        snipping_switch,
         "Gitter (l): ",
         dcc.Slider(1, 5, 1, value=3, id="l-4-8"),
         "Dämpfung (w): ",
@@ -65,8 +60,8 @@ def _add_iters_trace(stufenindex_l, w, fig):
 
 @callback(Output('iter-graph-4-8', 'figure'), Output('w-4-8', 'value'),
           Input('submit-button-4-8', 'n_clicks'), Input('l-4-8', 'value'),
-          State('w-4-8', 'value'), State('iter-graph-4-8', 'figure'))
-def add_traces(n_clicks, stufenindex_l, w, fig):
+          State('w-4-8', 'value'), State('iter-graph-4-8', 'figure'), Input('tabs-jacobi-gausseidel-switch', 'value'))
+def add_traces(n_clicks, stufenindex_l, w, fig, mode):
     if ctx.triggered_id is not None and ctx.triggered_id.startswith('submit-button-4-8'):
         fig = go.Figure(fig)
         _add_iters_trace(stufenindex_l, w, fig)
@@ -77,7 +72,7 @@ def add_traces(n_clicks, stufenindex_l, w, fig):
         return fig, 0.5
 
 
-@callback(Output('w-4-8', 'step'), Input('snapping-4-8', 'value'))
+@callback(Output('w-4-8', 'step'), Input('snapping', 'on'))
 def snapping(value):
     if value:
         return None
