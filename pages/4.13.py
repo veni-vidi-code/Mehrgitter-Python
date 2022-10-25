@@ -69,7 +69,7 @@ def change_j_max(stufenindex_l, j, direction, mode):
     if direction == 'r':
         n = N_l(stufenindex_l)
     else:
-        n = (2 ** stufenindex_l) - 1
+        n = N_l(stufenindex_l - 1)
     if stufenindex_l > 5:
         return n, min(n, j), {"placement": "bottom", "always_visible": True}, None
     else:

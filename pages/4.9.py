@@ -71,6 +71,7 @@ layout = html.Div(children=[
 ])
 
 
+@cache.memoize()
 def fault_after_steps_jacobi(stufenindex_l, w: float, start: np.ndarray, steps: int = 2):
     if start is None:
         start = example_startfault
