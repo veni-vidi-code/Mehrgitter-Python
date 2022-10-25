@@ -28,6 +28,7 @@ navbar = dbc.NavbarSimple(
     color="#abccfb",
     className="main-navbar",
     fluid=True,
+    brand_href="/",
 )
 
 dashapp.layout = html.Div([
