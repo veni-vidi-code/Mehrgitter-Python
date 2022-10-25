@@ -12,7 +12,7 @@ from implementations.zweigitter import zweigitter_step
 from pages.cache import cache
 import dash_bootstrap_components as dbc
 
-dash.register_page(__name__, name="Fehler Dämpfung Jacobi")
+dash.register_page(__name__, name="Fehler Dämpfung Jacobi", order=3)
 
 max_l = 4
 

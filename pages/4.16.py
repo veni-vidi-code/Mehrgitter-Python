@@ -8,7 +8,7 @@ from implementations.dirichlect import N_l
 from implementations.ggk import ggk_Psi_l
 from pages.cache import cache
 
-dash.register_page(__name__, name="Fourier Moden mit Grobgitterkorrektur")
+dash.register_page(__name__, name="Fourier Moden mit Grobgitterkorrektur", order=5)
 
 layout = html.Div(children=[
     html.H1(children='Fourier Moden'),

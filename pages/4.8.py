@@ -9,7 +9,7 @@ import plotly.graph_objects as go
 
 from pages.cache import cache
 
-dash.register_page(__name__, name="Iterationen Dämpfung Jacobi")
+dash.register_page(__name__, name="Iterationen Dämpfung Jacobi", order=2)
 
 layout = html.Div(children=[
     html.H1(children='Iterationen relaxiertes Jacobi Verfahren'),

@@ -9,7 +9,7 @@ from pages.cache import cache
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 
-dash.register_page(__name__, name="Fourier Moden")
+dash.register_page(__name__, name="Fourier Moden", order=4)
 
 layout = html.Div(children=[
     html.H1(children='Fourier Moden'),
