@@ -1,3 +1,4 @@
+from Utils.components import snipping_switch
 from implementations.dirichlect import get_jacobi_generator, N_l
 
 import numpy as np
@@ -6,12 +7,12 @@ from dash import html, dcc, callback, Input, Output, State, ALL
 
 import plotly.graph_objects as go
 
-from implementations.ggk import ggk_step
 from implementations.jacobi import jacobi_matrices
 from implementations.zweigitter import zweigitter_step
 from pages.cache import cache
+import dash_bootstrap_components as dbc
 
-dash.register_page(__name__, name="Fehler Dämpfung Jacobi")
+dash.register_page(__name__, name="Fehler Dämpfung Jacobi", order=3)
 
 max_l = 4
 
@@ -34,13 +35,7 @@ for l in range(1, max_l + 1):
 layout = html.Div(children=[
     html.H1(children='Fehler relaxiertes Jacobi Verfahren'),
     html.Div([
-        dcc.Checklist(
-            options=[
-                {'label': 'Easy Snapping', 'value': 'y'}
-            ],
-            value=['y'],
-            id="snapping-4-9"
-        ),
+        snipping_switch,
         "Gitter (l): ",
         dcc.Slider(1, max_l, 1, value=3, id="l-4-9"),
         "Dämpfung (w): ",
@@ -50,17 +45,33 @@ layout = html.Div(children=[
             1 / 4: '1/4',
             1 / 8: '1/8'
         }, value=1 / 4, id="w-4-9", tooltip={"placement": "bottom"}),
-        html.Details(children=[
-            html.Summary(children="Start Fehler"),
-            html.Div(id="fault_vector_div-4-9"),
-            html.Button(id='submit-button-4-9', children='Update', n_clicks=0)
-        ]),
+        dbc.Button(
+            "Start Fehler",
+            id="collapse-button",
+            color="info",
+            outline=True,
+            n_clicks=0,
+        ),
+        dbc.Collapse(
+            dbc.Card(dbc.CardBody([html.Div(id="fault_vector_div-4-9"),
+                                   dbc.Button(
+                                       "Update",
+                                       id="submit-button-4-9",
+                                       color="primary",
+                                       n_clicks=0,
+                                   )
+                                   ])),
+            id="collapse",
+            is_open=False,
+        ),
+
     ]),
     html.Br(),
     dcc.Graph(id='iter-graph-4-9'),
 ])
 
 
+@cache.memoize()
 def fault_after_steps_jacobi(stufenindex_l, w: float, start: np.ndarray, steps: int = 2):
     if start is None:
         start = example_startfault
@@ -89,8 +100,8 @@ def _generate_fig(stufenindex_l, w, start: np.ndarray):
           Input('l-4-9', 'value'),
           Input('w-4-9', 'value'),
           State({'type': 'startfault-4-9', 'index': ALL}, 'value'),
-          Input('submit-button-4-9', 'n_clicks'))
-def add_traces(stufenindex_l, w, vector, n_clicks):
+          Input('submit-button-4-9', 'n_clicks'), Input('tabs-jacobi-gausseidel-switch', 'value'))
+def add_traces(stufenindex_l, w, vector, n_clicks, mode):
     if dash.ctx.triggered_id is None or dash.ctx.triggered_id.startswith("l-4-9"):
         vector = startfaults[stufenindex_l - 1]
         return _generate_fig(stufenindex_l, w, np.array(vector)), default_array_div[stufenindex_l - 1]
@@ -98,9 +109,20 @@ def add_traces(stufenindex_l, w, vector, n_clicks):
         return _generate_fig(stufenindex_l, w, np.array(vector)), dash.no_update
 
 
-@callback(Output('w-4-9', 'step'), Input('snapping-4-9', 'value'))
+@callback(Output('w-4-9', 'step'), Input('snapping', 'on'))
 def snapping(value):
     if value:
         return None
     else:
         return 1e-6
+
+
+@callback(
+    Output("collapse", "is_open"),
+    [Input("collapse-button", "n_clicks")],
+    [State("collapse", "is_open")],
+)
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open

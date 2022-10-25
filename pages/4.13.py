@@ -6,8 +6,10 @@ import plotly.graph_objects as go
 from implementations.Gitter import LINEAR_GITTERHIERACHIE, TRIVIAL_GITTERHIERACHIE
 from implementations.dirichlect import N_l
 from pages.cache import cache
+import dash_bootstrap_components as dbc
+import dash_daq as daq
 
-dash.register_page(__name__, name="Fourier Moden")
+dash.register_page(__name__, name="Fourier Moden", order=4)
 
 layout = html.Div(children=[
     html.H1(children='Fourier Moden'),
@@ -16,14 +18,12 @@ layout = html.Div(children=[
         dcc.Slider(1, 10, 1, value=3, id="l"),
         "Wellenzahl (j): ",
         dcc.Slider(1, 20, 1, value=1, id="j"),
-        "Skalieren (für Prolongation empfohlen!)",
-        dcc.Checklist(
-            options=[
-                {'label': 'Skalieren', 'value': 's'}
-            ],
-            value=[],
-            id="skalieren"
-        ),
+        dbc.Row(
+            [dbc.Col("Skalieren (für Prolongation empfohlen!)", width="auto"),
+             dbc.Col(daq.BooleanSwitch(
+                 on=True,
+                 id="skalieren"
+             ), width="auto")]),
         "Richtung: ",
         dcc.Dropdown(
             options=[
@@ -39,14 +39,10 @@ layout = html.Div(children=[
 ])
 
 
-@callback(Output('fourier-modes', 'figure'), Input('l', 'value'), Input('j', 'value'), Input('skalieren', 'value'),
+@callback(Output('fourier-modes', 'figure'), Input('l', 'value'), Input('j', 'value'), Input('skalieren', 'on'),
           Input('richtung', 'value'))
 @cache.memoize()
 def change_gitter(stufenindex_l, j, scale, direction):
-    if scale == ['s']:
-        scale = True
-    else:
-        scale = False
     fig = go.Figure()
     linear_gitter = LINEAR_GITTERHIERACHIE
     x = linear_gitter.get_gitterfolge(stufenindex_l)
@@ -68,15 +64,13 @@ def change_gitter(stufenindex_l, j, scale, direction):
 
 
 @callback(Output('j', 'max'), Output('j', 'value'), Output('j', "tooltip"), Output('j', "marks"),
-          Input('l', 'value'), State('j', 'value'), Input('richtung', 'value'))
-def change_j_max(stufenindex_l, j, direction):
+          Input('l', 'value'), State('j', 'value'), Input('richtung', 'value'), Input('tabs-jacobi-gausseidel-switch', 'value'))
+def change_j_max(stufenindex_l, j, direction, mode):
     if direction == 'r':
         n = N_l(stufenindex_l)
     else:
-        n = (2 ** stufenindex_l) - 1
+        n = N_l(stufenindex_l - 1)
     if stufenindex_l > 5:
         return n, min(n, j), {"placement": "bottom", "always_visible": True}, None
     else:
         return n, min(n, j), None, {}
-
-

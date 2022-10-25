@@ -1,22 +1,18 @@
 import dash
 from dash import html, dcc, callback, Input, Output, State, ctx
+
+from Utils.components import snipping_switch
 from implementations import dirichlect
 import plotly.graph_objects as go
-
+import dash_bootstrap_components as dbc
 from implementations.dirichlect import N_l
 
-dash.register_page(__name__, name="Eigenwerte")
+dash.register_page(__name__, name="Eigenwerte", order=1)
 
 layout = html.Div(children=[
     html.H1(children='Eigenwerte Fourier Moden'),
     html.Div([
-        dcc.Checklist(
-            options=[
-                {'label': 'Easy Snapping', 'value': 'y'}
-            ],
-            value=['y'],
-            id="snapping"
-        ),
+        snipping_switch,
         "Gitter (l): ",
         dcc.Slider(1, 5, 1, value=3, id="l"),
         "Dämpfung (w): ",
@@ -28,7 +24,13 @@ layout = html.Div(children=[
             1 / 8: '1/8',
             0: '0'
         }, value=0.5, id="w", tooltip={"placement": "bottom"}),
-        html.Button(id='submit-button', children='Hinzufügen', n_clicks=0),
+        dbc.Button(
+            "Hinzufügen",
+            id="submit-button",
+            color="info",
+            outline=True,
+            n_clicks=0,
+        ),
     ]),
     html.Br(),
     dcc.Graph(id='eigenvalues'),
@@ -43,8 +45,8 @@ def _add_eigenvalues_trace(stufenindex_l, w, fig):
 
 @callback(Output('eigenvalues', 'figure'), Output('w', 'value'),
           Input('submit-button', 'n_clicks'), Input('l', 'value'),
-          State('w', 'value'), State('eigenvalues', 'figure'))
-def add_eigenvalues(n_clicks, stufenindex_l, w, fig):
+          State('w', 'value'), State('eigenvalues', 'figure'), Input('tabs-jacobi-gausseidel-switch', 'value'))
+def add_eigenvalues(n_clicks, stufenindex_l, w, fig, mode):
     if ctx.triggered_id is not None and ctx.triggered_id.startswith('submit-button'):
         fig = go.Figure(fig)
         _add_eigenvalues_trace(stufenindex_l, w, fig)
@@ -55,7 +57,7 @@ def add_eigenvalues(n_clicks, stufenindex_l, w, fig):
         return fig, 0.5
 
 
-@callback(Output('w', 'step'), Input('snapping', 'value'))
+@callback(Output('w', 'step'), Input('snapping', 'on'))
 def snapping(value):
     if value:
         return None

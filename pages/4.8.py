@@ -1,25 +1,20 @@
+from Utils.components import snipping_switch
 from implementations.dirichlect import get_jacobi_generator, N_l
 
 import numpy as np
 import dash
 from dash import html, dcc, callback, Input, Output, State, ctx
-
+import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 
 from pages.cache import cache
 
-dash.register_page(__name__, name="Iterationen Dämpfung Jacobi")
+dash.register_page(__name__, name="Iterationen Dämpfung Jacobi", order=2)
 
 layout = html.Div(children=[
     html.H1(children='Iterationen relaxiertes Jacobi Verfahren'),
     html.Div([
-        dcc.Checklist(
-            options=[
-                {'label': 'Easy Snapping', 'value': 'y'}
-            ],
-            value=['y'],
-            id="snapping-4-8"
-        ),
+        snipping_switch,
         "Gitter (l): ",
         dcc.Slider(1, 5, 1, value=3, id="l-4-8"),
         "Dämpfung (w): ",
@@ -30,7 +25,13 @@ layout = html.Div(children=[
             1 / 4: '1/4',
             1 / 8: '1/8'
         }, value=0.5, id="w-4-8", tooltip={"placement": "bottom"}),
-        html.Button(id='submit-button-4-8', children='Hinzufügen', n_clicks=0),
+        dbc.Button(
+            "Hinzufügen",
+            id="submit-button-4-8",
+            color="info",
+            outline=True,
+            n_clicks=0,
+        ),
     ]),
     html.Br(),
     dcc.Graph(id='iter-graph-4-8'),
@@ -65,8 +66,8 @@ def _add_iters_trace(stufenindex_l, w, fig):
 
 @callback(Output('iter-graph-4-8', 'figure'), Output('w-4-8', 'value'),
           Input('submit-button-4-8', 'n_clicks'), Input('l-4-8', 'value'),
-          State('w-4-8', 'value'), State('iter-graph-4-8', 'figure'))
-def add_traces(n_clicks, stufenindex_l, w, fig):
+          State('w-4-8', 'value'), State('iter-graph-4-8', 'figure'), Input('tabs-jacobi-gausseidel-switch', 'value'))
+def add_traces(n_clicks, stufenindex_l, w, fig, mode):
     if ctx.triggered_id is not None and ctx.triggered_id.startswith('submit-button-4-8'):
         fig = go.Figure(fig)
         _add_iters_trace(stufenindex_l, w, fig)
@@ -77,7 +78,7 @@ def add_traces(n_clicks, stufenindex_l, w, fig):
         return fig, 0.5
 
 
-@callback(Output('w-4-8', 'step'), Input('snapping-4-8', 'value'))
+@callback(Output('w-4-8', 'step'), Input('snapping', 'on'))
 def snapping(value):
     if value:
         return None
