@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 
 from implementations.dirichlect import N_l
 
-dash.register_page(__name__, name="Eigenwerte", path='/')
+dash.register_page(__name__, name="Eigenwerte")
 
 layout = html.Div(children=[
     html.H1(children='Eigenwerte Fourier Moden'),

@@ -1,6 +1,6 @@
 import dash_daq as daq
 import dash_bootstrap_components as dbc
-from dash import dcc
+from dash import dcc, html
 
 snipping_switch = dbc.Row(
     [dbc.Col("Easy Snapping", width="auto"),
@@ -15,7 +15,7 @@ _tab_selected_style = {
     "font-weight": "bold"
 }
 
-jacobi_gausseidel_switch = dcc.Tabs(id="tabs-jacobi-gausseidel-switch", value='jacobi', children=[
+jacobi_gausseidel_switch = html.Div(dcc.Tabs(id="tabs-jacobi-gausseidel-switch", value='jacobi', children=[
     dcc.Tab(label='Jacobi', value='jacobi', selected_style=_tab_selected_style),
     dcc.Tab(label='Gauss Seidel', value='gausseidel', selected_style=_tab_selected_style),
-])
+]), hidden=True, id="div-jacobi-gausseidel-switch")
