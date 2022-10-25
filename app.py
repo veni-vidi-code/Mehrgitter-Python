@@ -22,6 +22,7 @@ navbar = dbc.NavbarSimple(
         nav=True,
         in_navbar=True,
         label="Seite wechseln",
+        direction="start",
     ),
     brand="Demo Mehrkörperverfahren",
     color="#abccfb",
