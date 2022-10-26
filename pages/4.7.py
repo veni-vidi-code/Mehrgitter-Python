@@ -4,8 +4,8 @@ import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ctx
 
 from Utils.components import snipping_switch
-from implementations import dirichlect
-from implementations.dirichlect import N_l
+from implementations import dirichlect_ndarrays
+from implementations.helpers import N_l
 
 dash.register_page(__name__, name="Eigenwerte", order=1)
 
@@ -39,7 +39,7 @@ layout = html.Div(children=[
 
 def _add_eigenvalues_trace(stufenindex_l, w, fig):
     x = list(range(1, N_l(stufenindex_l) + 1))
-    y = [dirichlect.eigenvalues(stufenindex_l, i, w) for i in x]
+    y = [dirichlect_ndarrays.eigenvalues(stufenindex_l, i, w) for i in x]
     fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers', name=f'w={w}'))
 
 

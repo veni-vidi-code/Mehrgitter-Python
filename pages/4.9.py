@@ -5,8 +5,9 @@ import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ALL
 
 from Utils.components import snipping_switch
-from implementations.dirichlect import get_dirichlect_generator, N_l
+from implementations.dirichlect import get_dirichlect_generator
 from implementations.gaussseidel import _gauss_seidel_matrices
+from implementations.helpers import N_l
 from implementations.jacobi import jacobi_matrices
 from implementations.zweigitter import zweigitter_step
 from pages.cache import cache

@@ -5,7 +5,8 @@ import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ctx
 
 from Utils.components import snipping_switch
-from implementations.dirichlect import get_dirichlect_generator, N_l
+from implementations.dirichlect import get_dirichlect_generator
+from implementations.helpers import N_l
 from pages.cache import cache
 
 dash.register_page(__name__, name="Iterationen Dämpfung Jacobi/Gauss Seidel", order=2)
@@ -60,7 +61,11 @@ def _iter_trace(stufenindex_l, w, mode):
 
 def _add_iters_trace(stufenindex_l, w, fig, mode=""):
     x, y = _iter_trace(stufenindex_l, w, mode)
-    fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers', name=f'w={w}'))
+    fig.add_trace(
+        go.Scatter(x=x, y=y, mode='lines+markers', name=f'w={w}, {"Jacobi" if mode == "jacobi" else "Gauss-Seidel"}'))
+    x, y = _iter_trace(stufenindex_l, w, "zweigitter-" + mode)
+    fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers',
+                             name=f'w={w}, Zweigitter {"Jacobi" if mode == "jacobi" else "Gauss-Seidel"}'))
 
 
 @callback(Output('iter-graph-4-8', 'figure'), Output('w-4-8', 'value'),

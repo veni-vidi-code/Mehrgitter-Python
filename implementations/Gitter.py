@@ -1,6 +1,6 @@
 import numpy as np
 
-from .dirichlect import MATRIXFOLGENFUNKTION, N_l
+from implementations.helpers import MATRIXFOLGENFUNKTION, N_l
 
 
 def standard_schrittweitenfolge(stufenindex_l: int) -> np.ndarray:
