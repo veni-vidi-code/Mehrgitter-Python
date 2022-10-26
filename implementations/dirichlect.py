@@ -2,7 +2,7 @@
 import numpy as np
 
 from implementations.dirichlect_ndarrays import fourier_mode, dirichlect_randwert_a_l
-from implementations.gaussseidel import gauss_seidel_steps, _gauss_seidel_matrices
+from implementations.gaussseidel import gauss_seidel_steps, gauss_seidel_matrices
 from implementations.jacobi import jacobi_steps, jacobi_matrices
 from implementations.zweigitter import zweigitter_steps
 
@@ -22,6 +22,6 @@ def get_dirichlect_generator(stufenindex_l: int, mode: int, w: float, startwith:
     elif iterator == "zweigitter-jacobi":
         gen = zweigitter_steps(stufenindex_l, 2, 2, e, np.zeros_like(e), jacobi_matrices, w1=2 * w, w2=2 * w)
     else:
-        gen = zweigitter_steps(stufenindex_l, 2, 2, e, np.zeros_like(e), _gauss_seidel_matrices, w1=2 * w, w2=2 * w)
+        gen = zweigitter_steps(stufenindex_l, 2, 2, e, np.zeros_like(e), gauss_seidel_matrices, w1=2 * w, w2=2 * w)
 
     yield from gen

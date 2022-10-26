@@ -9,10 +9,10 @@ from implementations.dirichlect import get_dirichlect_generator
 from implementations.helpers import N_l
 from pages.cache import cache
 
-dash.register_page(__name__, name="Iterationen Dämpfung Jacobi/Gauss Seidel", order=2)
+dash.register_page(__name__, name="Anzahl Iterationen", order=2)
 
 layout = html.Div(children=[
-    html.H1(children='Iterationen relaxiertes Jacobi/Gauss Seidel Verfahren'),
+    html.H1(children='Anzahl Iterationen'),
     html.Div([
         snipping_switch,
         "Gitter (l): ",
@@ -70,7 +70,7 @@ def _add_iters_trace(stufenindex_l, w, fig, mode=""):
 
 @callback(Output('iter-graph-4-8', 'figure'), Output('w-4-8', 'value'),
           Input('submit-button-4-8', 'n_clicks'), Input('l-4-8', 'value'),
-          State('w-4-8', 'value'), State('iter-graph-4-8', 'figure'), Input('tabs-jacobi-gausseidel-switch', 'value'))
+          State('w-4-8', 'value'), State('iter-graph-4-8', 'figure'), Input('tabs-jacobi-gaussseidel-switch', 'value'))
 def add_traces(n_clicks, stufenindex_l, w, fig, mode):
     if ctx.triggered_id is not None and ctx.triggered_id.startswith('submit-button-4-8'):
         fig = go.Figure(fig)
