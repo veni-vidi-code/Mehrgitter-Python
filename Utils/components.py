@@ -1,6 +1,9 @@
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 from dash import dcc, html, Output, Input, State
+from os.path import exists
+
+from pages.cache import cache
 
 snipping_switch = dbc.Row(
     [dbc.Col("Easy Snapping", width="auto"),
@@ -29,8 +32,7 @@ footer = html.Footer(
         fluid=True),
     className="fixed-bottom mb-2")
 
-canvas = dbc.Offcanvas(dcc.Markdown("TestText $$w_{a}$$", mathjax=True),
-                       id="offcanvas", is_open=False, title="Test $w_{a}$")
+canvas = dbc.Offcanvas("", id="offcanvas", is_open=False, title="")
 
 
 def add_callbacks(app):
@@ -47,3 +49,36 @@ def add_callbacks(app):
             return True
         else:
             return False
+
+    @app.callback(Output('offcanvas', 'title'),
+                  Output('offcanvas', 'children'),
+                  Input('url', 'pathname'))
+    @cache.memoize()
+    def update_offcanvas(pathname):
+        # read markdown file from assets/mardownpagesexplanaition
+        filename = pathname.replace("/", "_")[1:] + ".md"
+        # ensures no relative paths are used
+        filename = filename.replace(".", "")
+        filename = filename.replace("~", "")
+
+        if filename == ".md":
+            filename = "index.md"
+        path = "assets/markdownpagesexplanation/" + filename
+        if exists(path):
+            with open(path, "r", encoding="") as f:
+                markdown = f.read()
+            # set title to first line of markdown file
+            title = markdown.split("\n")[0]
+            # remove first line of markdown file by slicing its amount of charcter
+            markdown = markdown[len(title) + 1:]
+
+            if title == "":
+                title = "Info"
+                for page in app.page_registry.values():
+                    if page["path"] == pathname:
+                        title = page["name"]
+                        break
+
+            return title, dcc.Markdown(markdown, mathjax=True)
+        else:
+            return "Info", dcc.Markdown("Zu dieser Seite gibt es keine Info")
