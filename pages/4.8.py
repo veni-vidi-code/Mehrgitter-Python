@@ -1,18 +1,17 @@
-from Utils.components import snipping_switch
-from implementations.dirichlect import get_jacobi_generator, N_l
-
-import numpy as np
 import dash
-from dash import html, dcc, callback, Input, Output, State, ctx
 import dash_bootstrap_components as dbc
+import numpy as np
 import plotly.graph_objects as go
+from dash import html, dcc, callback, Input, Output, State, ctx
 
+from Utils.components import snipping_switch
+from implementations.dirichlect import get_dirichlect_generator, N_l
 from pages.cache import cache
 
-dash.register_page(__name__, name="Iterationen Dämpfung Jacobi", order=2)
+dash.register_page(__name__, name="Iterationen Dämpfung Jacobi/Gauss Seidel", order=2)
 
 layout = html.Div(children=[
-    html.H1(children='Iterationen relaxiertes Jacobi Verfahren'),
+    html.H1(children='Iterationen relaxiertes Jacobi/Gauss Seidel Verfahren'),
     html.Div([
         snipping_switch,
         "Gitter (l): ",
@@ -38,8 +37,8 @@ layout = html.Div(children=[
 ])
 
 
-def find_needed_iters(stufenindex_l, j, w: float = 0.5, limit: float = 1e-2):
-    generator = get_jacobi_generator(stufenindex_l, j, w)
+def find_needed_iters(stufenindex_l, j, w: float = 0.5, limit: float = 1e-2, mode=""):
+    generator = get_dirichlect_generator(stufenindex_l, j, w, iterator=mode)
     e = next(generator)
     eps = np.linalg.norm(e)
     i = 0
@@ -53,14 +52,14 @@ def find_needed_iters(stufenindex_l, j, w: float = 0.5, limit: float = 1e-2):
 
 
 @cache.memoize()
-def _iter_trace(stufenindex_l, w):
+def _iter_trace(stufenindex_l, w, mode):
     x = list(range(1, N_l(stufenindex_l) + 1))
-    y = [find_needed_iters(stufenindex_l, i, w) for i in x]
+    y = [find_needed_iters(stufenindex_l, i, w, mode=mode) for i in x]
     return x, y
 
 
-def _add_iters_trace(stufenindex_l, w, fig):
-    x, y = _iter_trace(stufenindex_l, w)
+def _add_iters_trace(stufenindex_l, w, fig, mode=""):
+    x, y = _iter_trace(stufenindex_l, w, mode)
     fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers', name=f'w={w}'))
 
 
@@ -70,11 +69,11 @@ def _add_iters_trace(stufenindex_l, w, fig):
 def add_traces(n_clicks, stufenindex_l, w, fig, mode):
     if ctx.triggered_id is not None and ctx.triggered_id.startswith('submit-button-4-8'):
         fig = go.Figure(fig)
-        _add_iters_trace(stufenindex_l, w, fig)
+        _add_iters_trace(stufenindex_l, w, fig, mode)
         return fig, w
     else:
         fig = go.Figure()
-        _add_iters_trace(stufenindex_l, 0.5, fig)
+        _add_iters_trace(stufenindex_l, 0.5, fig, mode)
         return fig, 0.5
 
 

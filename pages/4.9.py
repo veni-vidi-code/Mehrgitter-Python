@@ -1,18 +1,17 @@
-from Utils.components import snipping_switch
-from implementations.dirichlect import get_jacobi_generator, N_l
-
-import numpy as np
 import dash
+import dash_bootstrap_components as dbc
+import numpy as np
+import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ALL
 
-import plotly.graph_objects as go
-
+from Utils.components import snipping_switch
+from implementations.dirichlect import get_dirichlect_generator, N_l
+from implementations.gaussseidel import _gauss_seidel_matrices
 from implementations.jacobi import jacobi_matrices
 from implementations.zweigitter import zweigitter_step
 from pages.cache import cache
-import dash_bootstrap_components as dbc
 
-dash.register_page(__name__, name="Fehler Dämpfung Jacobi", order=3)
+dash.register_page(__name__, name="Fehler Dämpfung", order=3)
 
 max_l = 4
 
@@ -33,7 +32,7 @@ for l in range(1, max_l + 1):
     default_array_div.append(x)
 
 layout = html.Div(children=[
-    html.H1(children='Fehler relaxiertes Jacobi Verfahren'),
+    html.H1(children='Fehler Dämpfung'),
     html.Div([
         snipping_switch,
         "Gitter (l): ",
@@ -72,20 +71,21 @@ layout = html.Div(children=[
 
 
 @cache.memoize()
-def fault_after_steps_jacobi(stufenindex_l, w: float, start: np.ndarray, steps: int = 2):
+def fault_after_steps(stufenindex_l, w: float, start: np.ndarray, steps: int = 2, mode = "jacobi"):
     if start is None:
         start = example_startfault
-    generator = get_jacobi_generator(stufenindex_l, 0, w, start)
+    generator = get_dirichlect_generator(stufenindex_l, 0, w, start, mode)
     return [next(generator) for _ in range(steps + 1)]
 
 
 @cache.memoize()
-def _generate_fig(stufenindex_l, w, start: np.ndarray):
+def _generate_fig(stufenindex_l, w, start: np.ndarray, mode):
     assert start.size == N_l(stufenindex_l)
-    faults = fault_after_steps_jacobi(stufenindex_l, w, start, 2)
+    faults = fault_after_steps(stufenindex_l, w, start, 2, mode)
 
     # for performance improvements this uses the already known result from faults
-    y = zweigitter_step(stufenindex_l, 0, 2, start, faults[2], psi_vor_matrice=jacobi_matrices, w1=2 * w,
+    matrices = jacobi_matrices if mode == "jacobi" else _gauss_seidel_matrices
+    y = zweigitter_step(stufenindex_l, 0, 2, start, faults[2], psi_vor_matrice=matrices, w1=2 * w,
                         w2=2 * w)
 
     fig = go.Figure()
@@ -104,9 +104,9 @@ def _generate_fig(stufenindex_l, w, start: np.ndarray):
 def add_traces(stufenindex_l, w, vector, n_clicks, mode):
     if dash.ctx.triggered_id is None or dash.ctx.triggered_id.startswith("l-4-9"):
         vector = startfaults[stufenindex_l - 1]
-        return _generate_fig(stufenindex_l, w, np.array(vector)), default_array_div[stufenindex_l - 1]
+        return _generate_fig(stufenindex_l, w, np.array(vector), mode), default_array_div[stufenindex_l - 1]
     else:
-        return _generate_fig(stufenindex_l, w, np.array(vector)), dash.no_update
+        return _generate_fig(stufenindex_l, w, np.array(vector), mode), dash.no_update
 
 
 @callback(Output('w-4-9', 'step'), Input('snapping', 'on'))

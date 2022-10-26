@@ -1,10 +1,10 @@
+import dash
+import dash_bootstrap_components as dbc
 import flask
 from dash import Dash, html, dcc, Output, Input
-import dash
 
 from Utils.components import jacobi_gausseidel_switch
 from pages.cache import cache
-import dash_bootstrap_components as dbc
 
 server = flask.Flask(__name__)
 app = server
@@ -45,7 +45,7 @@ dashapp.layout = html.Div([
 @dashapp.callback(Output('div-jacobi-gausseidel-switch', 'hidden'),
                   Input('url', 'pathname'))
 def hide_jacobi_gausseidel_switch(pathname):
-    if pathname in ["/"]:  # A few pages don't need the switch
+    if pathname in ["/", "/4/7", "/4/13", "/4/16"]:  # A few pages don't need the switch
         return True
     else:
         return False

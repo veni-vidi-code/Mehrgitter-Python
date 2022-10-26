@@ -1,18 +1,18 @@
 import dash
-from dash import html, dcc, callback, Input, Output, State
-from implementations import dirichlect
+import dash_bootstrap_components as dbc
+import dash_daq as daq
 import plotly.graph_objects as go
+from dash import html, dcc, callback, Input, Output, State
 
+from implementations import dirichlect
 from implementations.Gitter import LINEAR_GITTERHIERACHIE, TRIVIAL_GITTERHIERACHIE
 from implementations.dirichlect import N_l
 from pages.cache import cache
-import dash_bootstrap_components as dbc
-import dash_daq as daq
 
-dash.register_page(__name__, name="Fourier Moden", order=4)
+dash.register_page(__name__, name="Restriktion/Prolongation", order=4)
 
 layout = html.Div(children=[
-    html.H1(children='Fourier Moden'),
+    html.H1(children='Restriktion/Prolongation Fourier Moden'),
     html.Div([
         "Gitter (l): ",
         dcc.Slider(1, 10, 1, value=3, id="l"),
@@ -64,8 +64,8 @@ def change_gitter(stufenindex_l, j, scale, direction):
 
 
 @callback(Output('j', 'max'), Output('j', 'value'), Output('j', "tooltip"), Output('j', "marks"),
-          Input('l', 'value'), State('j', 'value'), Input('richtung', 'value'), Input('tabs-jacobi-gausseidel-switch', 'value'))
-def change_j_max(stufenindex_l, j, direction, mode):
+          Input('l', 'value'), State('j', 'value'), Input('richtung', 'value'))
+def change_j_max(stufenindex_l, j, direction):
     if direction == 'r':
         n = N_l(stufenindex_l)
     else:
