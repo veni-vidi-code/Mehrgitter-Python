@@ -18,10 +18,10 @@ _tab_selected_style = {
     "fontWeight": "bold"
 }
 
-jacobi_gausseidel_switch = html.Div(dcc.Tabs(id="tabs-jacobi-gausseidel-switch", value='jacobi', children=[
+jacobi_gaussseidel_switch = html.Div(dcc.Tabs(id="tabs-jacobi-gaussseidel-switch", value='jacobi', children=[
     dcc.Tab(label='Jacobi', value='jacobi', selected_style=_tab_selected_style),
-    dcc.Tab(label='Gauss Seidel', value='gausseidel', selected_style=_tab_selected_style),
-]), hidden=True, id="div-jacobi-gausseidel-switch")
+    dcc.Tab(label='Gauss Seidel', value='gaussseidel', selected_style=_tab_selected_style),
+]), hidden=True, id="div-jacobi-gaussseidel-switch")
 
 footer = html.Footer(
     dbc.Container([
@@ -42,9 +42,9 @@ def add_callbacks(app):
     def toggle_offcanvas(n, is_open):
         return not is_open
 
-    @app.callback(Output('div-jacobi-gausseidel-switch', 'hidden'),
+    @app.callback(Output('div-jacobi-gaussseidel-switch', 'hidden'),
                   Input('url', 'pathname'))
-    def hide_jacobi_gausseidel_switch(pathname):
+    def hide_jacobi_gaussseidel_switch(pathname):
         if pathname in ["/", "/4/7", "/4/13", "/4/16"]:  # A few pages don't need the switch
             return True
         else:

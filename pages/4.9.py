@@ -5,8 +5,9 @@ import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ALL
 
 from Utils.components import snipping_switch
-from implementations.dirichlect import get_dirichlect_generator, N_l
-from implementations.gaussseidel import _gauss_seidel_matrices
+from implementations.dirichlect import get_dirichlect_generator
+from implementations.gaussseidel import gauss_seidel_matrices
+from implementations.helpers import N_l
 from implementations.jacobi import jacobi_matrices
 from implementations.zweigitter import zweigitter_step
 from pages.cache import cache
@@ -84,7 +85,7 @@ def _generate_fig(stufenindex_l, w, start: np.ndarray, mode):
     faults = fault_after_steps(stufenindex_l, w, start, 2, mode)
 
     # for performance improvements this uses the already known result from faults
-    matrices = jacobi_matrices if mode == "jacobi" else _gauss_seidel_matrices
+    matrices = jacobi_matrices if mode == "jacobi" else gauss_seidel_matrices
     y = zweigitter_step(stufenindex_l, 0, 2, start, faults[2], psi_vor_matrice=matrices, w1=2 * w,
                         w2=2 * w)
 
@@ -102,7 +103,7 @@ def _generate_fig(stufenindex_l, w, start: np.ndarray, mode):
           Input('l-4-9', 'value'),
           Input('w-4-9', 'value'),
           State({'type': 'startfault-4-9', 'index': ALL}, 'value'),
-          Input('submit-button-4-9', 'n_clicks'), Input('tabs-jacobi-gausseidel-switch', 'value'))
+          Input('submit-button-4-9', 'n_clicks'), Input('tabs-jacobi-gaussseidel-switch', 'value'))
 def add_traces(stufenindex_l, w, vector, n_clicks, mode):
     if dash.ctx.triggered_id is None or dash.ctx.triggered_id.startswith("l-4-9"):
         vector = startfaults[stufenindex_l - 1]

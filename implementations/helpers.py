@@ -4,6 +4,12 @@ import numpy as np
 
 from typing import Callable, Tuple
 
+MATRIXFOLGENFUNKTION = Callable[[int], np.ndarray]
+
+
+def N_l(stufenindex_l: int) -> int:
+    return (2 ** (stufenindex_l + 1)) - 1
+
 
 def iter_step(m: np.ndarray, nb: np.ndarray, x: np.ndarray) -> np.ndarray:
     """

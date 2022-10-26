@@ -2,9 +2,8 @@ import dash
 import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State
 
-from implementations import dirichlect
-from implementations.Gitter import LINEAR_GITTERHIERACHIE
-from implementations.dirichlect import N_l
+import implementations.dirichlect_ndarrays as dirichlect
+from implementations.helpers import N_l
 from implementations.ggk import ggk_Psi_l
 from pages.cache import cache
 

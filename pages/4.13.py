@@ -4,9 +4,9 @@ import dash_daq as daq
 import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State
 
-from implementations import dirichlect
+from implementations import dirichlect_ndarrays
 from implementations.Gitter import LINEAR_GITTERHIERACHIE, TRIVIAL_GITTERHIERACHIE
-from implementations.dirichlect import N_l
+from implementations.helpers import N_l
 from pages.cache import cache
 
 dash.register_page(__name__, name="Restriktion/Prolongation", order=4)
@@ -45,7 +45,7 @@ layout = html.Div(children=[
 def change_gitter(stufenindex_l, j, scale, direction):
     fig = go.Figure(layout=go.Layout(xaxis={"title": "$$k$$"}))
     linear_gitter = LINEAR_GITTERHIERACHIE
-    e_l_j = dirichlect.fourier_mode(stufenindex_l, j, scale)
+    e_l_j = dirichlect_ndarrays.fourier_mode(stufenindex_l, j, scale)
     fig.add_trace(go.Scatter(x=list(range(1, N_l(stufenindex_l) + 1)), y=e_l_j, mode='lines+markers',
                              name=f"$$e_{{k}}^{{{stufenindex_l},{j}}}$$ (original)"))
     trivial_gitter = TRIVIAL_GITTERHIERACHIE
@@ -60,7 +60,7 @@ def change_gitter(stufenindex_l, j, scale, direction):
                                  name=f"$$(R_{stufenindex_l}^{stufenindex_l - 1}"
                                       f"e^{{{stufenindex_l},{j}}})_{{2k}} (linear)$$"))
     else:
-        e_l_minus_1_j = dirichlect.fourier_mode(stufenindex_l - 1, j, scale)
+        e_l_minus_1_j = dirichlect_ndarrays.fourier_mode(stufenindex_l - 1, j, scale)
         y_linear = linear_gitter.get_prolongationsmatrix(stufenindex_l) @ e_l_minus_1_j
         fig.add_trace(go.Scatter(x=list(range(1, N_l(stufenindex_l) + 1)), y=y_linear, mode='lines+markers',
                                  name=f"$$(P_{stufenindex_l - 1}^{stufenindex_l}"

@@ -3,7 +3,7 @@ from typing import Callable, Any, Tuple
 
 import numpy as np
 
-from implementations.dirichlect import dirichlect_randwert_a_l
+from implementations.dirichlect_ndarrays import dirichlect_randwert_a_l
 from implementations.helpers import iter_step, iter_steps_generatordef, n_steps_of_generator
 
 from implementations.Gitter import linear_prolongation, linear_restriction

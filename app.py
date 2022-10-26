@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 import flask
 from dash import Dash, html, dcc
 
-from Utils.components import jacobi_gausseidel_switch, footer, canvas, add_callbacks
+from Utils.components import jacobi_gaussseidel_switch, footer, canvas, add_callbacks
 from pages.cache import cache
 
 server = flask.Flask(__name__)
@@ -35,7 +35,7 @@ dashapp.layout = html.Div([
     dcc.Location(id='url', refresh=False),
     dbc.Container([
         navbar,
-        jacobi_gausseidel_switch,
+        jacobi_gaussseidel_switch,
         dash.page_container,
         footer,
         canvas],
