@@ -56,16 +56,18 @@ def add_callbacks(app):
     @cache.memoize()
     def update_offcanvas(pathname):
         # read markdown file from assets/mardownpagesexplanaition
-        filename = pathname.replace("/", "_")[1:] + ".md"
         # ensures no relative paths are used
-        filename = filename.replace(".", "")
-        filename = filename.replace("~", "")
+        pathname = pathname.replace(".", "")
+        pathname = pathname.replace("~", "")
+
+        # replaces / with _ to get the correct filename
+        filename = pathname.replace("/", "_")[1:] + ".md"
 
         if filename == ".md":
             filename = "index.md"
         path = "assets/markdownpagesexplanation/" + filename
         if exists(path):
-            with open(path, "r", encoding="") as f:
+            with open(path, "r", encoding="utf-8") as f:
                 markdown = f.read()
             # set title to first line of markdown file
             title = markdown.split("\n")[0]
