@@ -26,7 +26,7 @@ jacobi_gausseidel_switch = html.Div(dcc.Tabs(id="tabs-jacobi-gausseidel-switch",
 footer = html.Footer(
     dbc.Container([
         dbc.Row([dbc.Col("© Tom Mucke", className="ml-auto pull-left"),
-                 dbc.Col(dbc.Button("Info", n_clicks=0, color="info", id="btn-info"),
+                 dbc.Col(dbc.Button("Info", n_clicks=0, color="info", id="btn-info", outline=True),
                          className="pull-right d-grid gap-2 col-6 mx-aut")],
                 className="justify-content-between")],
         fluid=True),
