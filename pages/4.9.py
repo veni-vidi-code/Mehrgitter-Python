@@ -66,12 +66,12 @@ layout = html.Div(children=[
 
     ]),
     html.Br(),
-    dcc.Graph(id='iter-graph-4-9'),
+    dcc.Graph(id='iter-graph-4-9', mathjax=True),
 ])
 
 
 @cache.memoize()
-def fault_after_steps(stufenindex_l, w: float, start: np.ndarray, steps: int = 2, mode = "jacobi"):
+def fault_after_steps(stufenindex_l, w: float, start: np.ndarray, steps: int = 2, mode="jacobi"):
     if start is None:
         start = example_startfault
     generator = get_dirichlect_generator(stufenindex_l, 0, w, start, mode)
@@ -88,10 +88,12 @@ def _generate_fig(stufenindex_l, w, start: np.ndarray, mode):
     y = zweigitter_step(stufenindex_l, 0, 2, start, faults[2], psi_vor_matrice=matrices, w1=2 * w,
                         w2=2 * w)
 
-    fig = go.Figure()
+    fig = go.Figure(layout=go.Layout(
+        yaxis={"title": "Fehler"},
+        xaxis={"title": "$$k$$"}))
     x = np.arange(1, N_l(stufenindex_l) + 1)
     for i in range(len(faults)):
-        fig.add_trace(go.Scatter(x=x, y=faults[i], name=f"Schritt {i}"))
+        fig.add_trace(go.Scatter(x=x, y=faults[i], name=f"$$e_{{{i}}}^{{{stufenindex_l}}}$$"))
     fig.add_trace(go.Scatter(x=x, y=y, name="Zweigitter"))
     return fig
 

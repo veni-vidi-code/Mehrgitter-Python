@@ -33,7 +33,7 @@ layout = html.Div(children=[
         ),
     ]),
     html.Br(),
-    dcc.Graph(id='iter-graph-4-8'),
+    dcc.Graph(id='iter-graph-4-8', mathjax=True),
 ])
 
 
@@ -72,7 +72,9 @@ def add_traces(n_clicks, stufenindex_l, w, fig, mode):
         _add_iters_trace(stufenindex_l, w, fig, mode)
         return fig, w
     else:
-        fig = go.Figure()
+        fig = go.Figure(layout=go.Layout(
+            yaxis={"title": 'Iterationen'},
+            xaxis={"title": "$$j$$"}))
         _add_iters_trace(stufenindex_l, 0.5, fig, mode)
         return fig, 0.5
 

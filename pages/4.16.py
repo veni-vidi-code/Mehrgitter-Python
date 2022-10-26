@@ -19,7 +19,7 @@ layout = html.Div(children=[
         dcc.Slider(1, 20, 1, value=1, id="j-4-16")
     ]),
     html.Br(),
-    dcc.Graph(id='fourier-modes-4-16'),
+    dcc.Graph(id='fourier-modes-4-16', mathjax=True),
 ])
 
 
@@ -27,13 +27,14 @@ layout = html.Div(children=[
 @cache.memoize()
 def change_gitter(stufenindex_l, j):
     # Dies würde sich auch effizienter mit Satz 4.53 berechnen lassen, aber zur Demonstration reicht das hier.
-    fig = go.Figure()
+    fig = go.Figure(layout=go.Layout(xaxis={"title": "$$k$$"}))
     e_l_j = dirichlect.fourier_mode(stufenindex_l, j, False)
     y = ggk_Psi_l(stufenindex_l, e_l_j)
-    linear_gitter = LINEAR_GITTERHIERACHIE
-    x = linear_gitter.get_gitterfolge(stufenindex_l)
-    fig.add_trace(go.Scatter(x=x, y=e_l_j, mode='lines+markers', name='e_l,j (original)'))
-    fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers', name='Psi(e_l,j) (ggk)'))
+    x = list(range(1, N_l(stufenindex_l) + 1))
+    fig.add_trace(go.Scatter(x=x, y=e_l_j, mode='lines+markers',
+                             name=f"$$e_{{k}}^{{{stufenindex_l},{j}}}$$"))
+    fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers',
+                             name=f"$$(\\Psi_{stufenindex_l}^{{GGK}}(e^{{{stufenindex_l},{j}}}))_{{k}}$$"))
     return fig
 
 

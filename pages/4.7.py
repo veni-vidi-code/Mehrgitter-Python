@@ -33,7 +33,7 @@ layout = html.Div(children=[
         ),
     ]),
     html.Br(),
-    dcc.Graph(id='eigenvalues'),
+    dcc.Graph(id='eigenvalues', mathjax=True)
 ])
 
 
@@ -52,7 +52,9 @@ def add_eigenvalues(n_clicks, stufenindex_l, w, fig):
         _add_eigenvalues_trace(stufenindex_l, w, fig)
         return fig, w
     else:
-        fig = go.Figure()
+        fig = go.Figure(layout=go.Layout(
+            yaxis={"title": f'$${{\\lambda}}^{{{stufenindex_l},j}}(w)$$'},
+            xaxis={"title": "$$j$$"}), )
         _add_eigenvalues_trace(stufenindex_l, 0.5, fig)
         return fig, 0.5
 
