@@ -1,10 +1,10 @@
 import dash
+import dash_bootstrap_components as dbc
+import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ctx
 
 from Utils.components import snipping_switch
 from implementations import dirichlect
-import plotly.graph_objects as go
-import dash_bootstrap_components as dbc
 from implementations.dirichlect import N_l
 
 dash.register_page(__name__, name="Eigenwerte", order=1)
@@ -33,7 +33,7 @@ layout = html.Div(children=[
         ),
     ]),
     html.Br(),
-    dcc.Graph(id='eigenvalues'),
+    dcc.Graph(id='eigenvalues', mathjax=True)
 ])
 
 
@@ -45,14 +45,16 @@ def _add_eigenvalues_trace(stufenindex_l, w, fig):
 
 @callback(Output('eigenvalues', 'figure'), Output('w', 'value'),
           Input('submit-button', 'n_clicks'), Input('l', 'value'),
-          State('w', 'value'), State('eigenvalues', 'figure'), Input('tabs-jacobi-gausseidel-switch', 'value'))
-def add_eigenvalues(n_clicks, stufenindex_l, w, fig, mode):
+          State('w', 'value'), State('eigenvalues', 'figure'))
+def add_eigenvalues(n_clicks, stufenindex_l, w, fig):
     if ctx.triggered_id is not None and ctx.triggered_id.startswith('submit-button'):
         fig = go.Figure(fig)
         _add_eigenvalues_trace(stufenindex_l, w, fig)
         return fig, w
     else:
-        fig = go.Figure()
+        fig = go.Figure(layout=go.Layout(
+            yaxis={"title": f'$${{\\lambda}}^{{{stufenindex_l},j}}(w)$$'},
+            xaxis={"title": "$$j$$"}), )
         _add_eigenvalues_trace(stufenindex_l, 0.5, fig)
         return fig, 0.5
 

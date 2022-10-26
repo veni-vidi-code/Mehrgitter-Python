@@ -1,7 +1,9 @@
-from typing import Callable
-import numpy as np
 import math
+from typing import Callable
 
+import numpy as np
+
+from implementations.gaussseidel import gauss_seidel_steps
 from implementations.jacobi import jacobi_steps
 
 MATRIXFOLGENFUNKTION = Callable[[int], np.ndarray]
@@ -43,12 +45,15 @@ def eigenvalues(stufenindex_l: int, mode: int, w: float) -> np.ndarray:
     return 1 - 4 * w * np.sin(mode * np.pi * h_l / 2) ** 2
 
 
-def get_jacobi_generator(stufenindex_l: int, mode: int, w: float, startwith: np.ndarray = None):
+def get_dirichlect_generator(stufenindex_l: int, mode: int, w: float, startwith: np.ndarray = None, iterator: str = "jacobi"):
     if startwith is None:
         e = fourier_mode(stufenindex_l, mode)
     else:
         e = startwith
     a = dirichlect_randwert_a_l(stufenindex_l)
     yield e
-    gen = jacobi_steps(a, e, np.zeros_like(e), 2 * w)
+    if iterator == "jacobi":
+        gen = jacobi_steps(a, e, np.zeros_like(e), 2 * w)
+    else:
+        gen = gauss_seidel_steps(a, e, np.zeros_like(e), 2 * w)
     yield from gen

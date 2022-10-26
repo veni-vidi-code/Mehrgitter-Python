@@ -1,10 +1,10 @@
-import flask
-from dash import Dash, html, dcc, Output, Input
 import dash
-
-from Utils.components import jacobi_gausseidel_switch
-from pages.cache import cache
 import dash_bootstrap_components as dbc
+import flask
+from dash import Dash, html, dcc
+
+from Utils.components import jacobi_gausseidel_switch, footer, canvas, add_callbacks
+from pages.cache import cache
 
 server = flask.Flask(__name__)
 app = server
@@ -37,19 +37,12 @@ dashapp.layout = html.Div([
         navbar,
         jacobi_gausseidel_switch,
         dash.page_container,
-        html.Footer("© Tom Mucke", className="fixed-bottom")],
+        footer,
+        canvas],
         fluid=True),
 ])
 
-
-@dashapp.callback(Output('div-jacobi-gausseidel-switch', 'hidden'),
-                  Input('url', 'pathname'))
-def hide_jacobi_gausseidel_switch(pathname):
-    if pathname in ["/"]:  # A few pages don't need the switch
-        return True
-    else:
-        return False
-
+add_callbacks(dashapp)
 
 if __name__ == '__main__':
     dashapp.run(debug=True)
