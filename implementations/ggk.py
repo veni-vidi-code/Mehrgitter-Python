@@ -25,7 +25,7 @@ def ggk_matrices(stufenindex_l: int, *, a_func: Callable[[int], np.ndarray] = di
         if w != 1:
             raise ValueError("GGK does not support relaxation")
         n = np.dot(p_l, np.dot(np.linalg.inv(a_l_minus_1), r_l))
-        m = np.identity(a_l.shape[0], dtype=a_l.dtype) - np.dot(n, a_l)
+        m = np.identity(a_l.shape[0], dtype=np.float64) - np.dot(n, a_l)
         if nb:
             return m, np.dot(n, f)
         return m, n

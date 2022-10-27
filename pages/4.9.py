@@ -61,7 +61,7 @@ layout = html.Div(children=[
         html.Br(),
         dbc.Button(
             "Start Fehler",
-            id="collapse-button",
+            id="collapse-button-4-9",
             color="info",
             outline=True,
             n_clicks=0,
@@ -75,7 +75,7 @@ layout = html.Div(children=[
                                        n_clicks=0,
                                    )
                                    ])),
-            id="collapse",
+            id="collapse-4-9",
             is_open=False,
         ),
 
@@ -147,9 +147,9 @@ def snapping(value):
 
 
 @callback(
-    Output("collapse", "is_open"),
-    [Input("collapse-button", "n_clicks")],
-    [State("collapse", "is_open")],
+    Output("collapse-4-9", "is_open"),
+    [Input("collapse-button-4-9", "n_clicks")],
+    [State("collapse-4-9", "is_open")],
 )
 def toggle_collapse(n, is_open):
     if n:

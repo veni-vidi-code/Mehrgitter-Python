@@ -9,9 +9,9 @@ from implementations.helpers import N_l
 def dirichlect_randwert_a_l(stufenindex_l: int) -> np.ndarray:
     assert stufenindex_l >= 0
     n_l = N_l(stufenindex_l)
-    a_l = (n_l + 1) * (n_l + 1) * (np.diag([-1 for _ in range(n_l - 1)], 1)
+    a_l = (n_l + 1) * (n_l + 1) * (np.diag([-1. for _ in range(n_l - 1)], 1)
                                    + 2 * np.eye(n_l, dtype=np.float64)
-                                   + np.diag([-1 for _ in range(n_l - 1)], -1))
+                                   + np.diag([-1. for _ in range(n_l - 1)], -1))
     return a_l
 
 

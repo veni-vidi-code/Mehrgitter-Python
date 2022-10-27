@@ -23,15 +23,15 @@ def mehrgitterverfahren_rekursiv(stufenindex_l: int, v1: int, v2: int, u: np.nda
     if stufenindex_l >= rec_limit:
         raise RecursionError("Recursion limit exceeded")  # We know it will reach this anyway, so we can save some time
     if stufenindex_l == 0:
-        return 1 / (a_func(0)[0]) * f
+        return (1. / (a_func(0)[0])) * f
     else:
         a_l = a_func(stufenindex_l)
         if psi_nach_matrice is None:
             psi_nach_matrice = psi_vor_matrice
         psi_1_gen = iter_steps_generatordef(psi_vor_matrice, a_l, u, f, w1)
         u = n_steps_of_generator(psi_1_gen, v1)
-        d = restriction(stufenindex_l) @ (a_l @ u - f)
-        e = np.zeros_like(d)
+        d = restriction(stufenindex_l) @ ((a_l @ u) - f)
+        e = np.zeros_like(d, dtype=np.float64)
         for _ in range(gamma):
             e = mehrgitterverfahren_rekursiv(stufenindex_l - 1, v1, v2, e, d, psi_vor_matrice, psi_nach_matrice, w1, w2,
                                              gamma, a_func=a_func, prolongation=prolongation, restriction=restriction)
