@@ -31,7 +31,8 @@ layout = html.Div(children=[
                 {'label': 'Prolongation', 'value': 'p'}
             ],
             value='r',
-            id="richtung"
+            id="richtung",
+            clearable=False
         ),
     ]),
     html.Br(),
