@@ -55,9 +55,9 @@ def _three_elem_prolongation(elems: list[float]):
 
 
 linear_restriction = _three_elem_restriction([0.25, 0.5, 0.25])
-trivial_restriction = _three_elem_restriction([0, 1, 0])
-linear_prolongation = _three_elem_prolongation([0.5, 1, 0.5])
-trivial_prolongation = _three_elem_prolongation([0, 1, 0])
+trivial_restriction = _three_elem_restriction([0., 1., 0.])
+linear_prolongation = _three_elem_prolongation([0.5, 1., 0.5])
+trivial_prolongation = _three_elem_prolongation([0., 1., 0.])
 
 LINEAR_GITTERHIERACHIE = Gitterhierachie(standard_schrittweitenfolge, linear_restriction, linear_prolongation)
 TRIVIAL_GITTERHIERACHIE = Gitterhierachie(standard_schrittweitenfolge, trivial_restriction, trivial_prolongation)

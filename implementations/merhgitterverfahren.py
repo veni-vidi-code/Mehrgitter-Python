@@ -28,28 +28,32 @@ def mehrgitterverfahren_rekursiv(stufenindex_l: int, v1: int, v2: int, u: np.nda
         a_l = a_func(stufenindex_l)
         if psi_nach_matrice is None:
             psi_nach_matrice = psi_vor_matrice
-        psi_1_gen = iter_steps_generatordef(psi_vor_matrice, a_l, u, f, w1)
-        u = n_steps_of_generator(psi_1_gen, v1)
-        d = restriction(stufenindex_l) @ ((a_l @ u) - f)
+        if v1 >= 1:
+            psi_1_gen = iter_steps_generatordef(psi_vor_matrice, a_l, u, f, w1)
+            u = n_steps_of_generator(psi_1_gen, v1)
+
+        d = np.dot(restriction(stufenindex_l), np.dot(a_l, u) - f)
         e = np.zeros_like(d, dtype=np.float64)
         for _ in range(gamma):
             e = mehrgitterverfahren_rekursiv(stufenindex_l - 1, v1, v2, e, d, psi_vor_matrice, psi_nach_matrice, w1, w2,
                                              gamma, a_func=a_func, prolongation=prolongation, restriction=restriction)
-        u = u - prolongation(stufenindex_l) @ e
-        psi_2_gen = iter_steps_generatordef(psi_nach_matrice, a_l, u, f, w2)
-        u = n_steps_of_generator(psi_2_gen, v2)
+        u = u - np.dot(prolongation(stufenindex_l), e)
+
+        if v2 >= 1:
+            psi_2_gen = iter_steps_generatordef(psi_nach_matrice, a_l, u, f, w2)
+            u = n_steps_of_generator(psi_2_gen, v2)
         return u
 
 
 def mehgitterverfaren_steps(stufenindex_l: int, v1: int, v2: int, u: np.ndarray, f: np.ndarray,
-                                psi_vor_matrice: Callable[[np.ndarray, np.ndarray, np.ndarray, float, bool],
-                                                          Tuple[np.ndarray, np.ndarray]],
-                                psi_nach_matrice: Optional[Callable[[np.ndarray, np.ndarray, np.ndarray, float, bool],
-                                                                    Tuple[np.ndarray, np.ndarray]]] = None,
-                                w1: float = 1, w2: float = 1, gamma: int = 1, *,
-                                a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
-                                prolongation: Callable[[int], np.ndarray] = linear_prolongation,
-                                restriction: Callable[[int], np.ndarray] = linear_restriction):
+                            psi_vor_matrice: Callable[[np.ndarray, np.ndarray, np.ndarray, float, bool],
+                                                      Tuple[np.ndarray, np.ndarray]],
+                            psi_nach_matrice: Optional[Callable[[np.ndarray, np.ndarray, np.ndarray, float, bool],
+                                                                Tuple[np.ndarray, np.ndarray]]] = None,
+                            w1: float = 1, w2: float = 1, gamma: int = 1, *,
+                            a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
+                            prolongation: Callable[[int], np.ndarray] = linear_prolongation,
+                            restriction: Callable[[int], np.ndarray] = linear_restriction):
     x = u.copy()
     total_steps = 0
     try:
@@ -60,4 +64,3 @@ def mehgitterverfaren_steps(stufenindex_l: int, v1: int, v2: int, u: np.ndarray,
             yield x
     except GeneratorExit:
         return x, total_steps
-

@@ -6,6 +6,7 @@ from dash import html, dcc, callback, Input, Output, State, ALL
 
 from Utils.components import snipping_switch
 from implementations.Gitter import standard_schrittweitenfolge
+from implementations.dirichlect_ndarrays import dirichlect_randwert_a_l
 from implementations.gaussseidel import gauss_seidel_matrices
 from implementations.helpers import N_l
 from implementations.jacobi import jacobi_matrices
@@ -95,6 +96,7 @@ def generate_figure(stufenindex_l, w, start: np.ndarray, mode, *, v1: int=2, v2:
     fig.add_trace(go.Scatter(x=x, y=u_star, name=f"$$u^{{{stufenindex_l},\\star}}$$"))
     fig.add_trace(go.Scatter(x=x, y=u_mgm, name=f"$$u^{{{stufenindex_l},MGM}}$$"))
     fig.add_trace(go.Scatter(x=x, y=u_0, name=f"$$u_0^{{{stufenindex_l}}}$$"))
+    fig.add_trace(go.Scatter(x=x, y=(dirichlect_randwert_a_l(stufenindex_l) @ u_mgm) - f, name=f"$$abw$$"))
     return fig
 
 

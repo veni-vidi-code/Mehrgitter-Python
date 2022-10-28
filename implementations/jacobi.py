@@ -39,6 +39,7 @@ if __name__ == "__main__":
     X = np.array([21, -19], np.float64)
     B = np.array([0.3, 0.3], np.float64)
     M, NB = jacobi_matrices(A, B, X)
+    np.set_printoptions(precision=15)
     print(M)
     generator = jacobi_steps(A, X, B)
     y = X
