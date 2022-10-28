@@ -9,6 +9,8 @@ from implementations.helpers import N_l
 from implementations.jacobi import jacobi_matrices, jacobi_steps
 from implementations.merhgitterverfahren import mehgitterverfaren_steps
 
+import os
+
 
 def f_x(x):
     return np.pi * np.pi / 8. * (9. * np.sin((3. * np.pi * x) / 2.) + 25 * np.sin(5 * np.pi * x / 2.))
@@ -70,14 +72,58 @@ def race(stufenindex_l, mode, w=0.25, runs=10, limit=1e-2):
     return time_2 - time_1, time_4 - time_3
 
 
-if __name__ == "__main__":
-    stufenindex_l = 6
-    mode = "jacobi"
-    w = 0.25
-    time_mgm, time_normal = race(stufenindex_l, mode, w, 100, 1e-6)
-    print(time_mgm)
-    print(time_normal)
-    print(f"Time for MGM: ", time.strftime("%H:%M:%S", time.gmtime(time_mgm)))
-    print(f"Time for normal {mode}: ", time.strftime("%H:%M:%S", time.gmtime(time_normal)))
+def benchmark():
+    results = []
+    l_to_runs = [0, 0, 5000, 1000, 500, 100, 10, 1, 1, 1, 1, 1, 1]
+    for mode in ["jacobi", "gauss_seidel"]:
+        if mode == "gauss_seidel":
+            return results
+        for stufenindex_l in range(2, 10):
+            for w in [0.25]:
+                print(f"running {mode} with l={stufenindex_l} and w={w}")
+                time_mgm, time_normal = race(stufenindex_l, mode, w, l_to_runs[stufenindex_l], 1e-6)
+                results.append({"mode": mode, "l": stufenindex_l, "w": w,
+                                "time_mgm": time_mgm, "time_normal": time_normal, "runs": l_to_runs[stufenindex_l],
+                                "percentage": time_normal / time_mgm * 100})
+                print(time_mgm)
+                print(time_normal)
+    return results
 
-    print(f"Speedup: {time_normal / time_mgm * 100}%")
+
+def combine_results():
+    results = {}
+    for file in os.listdir("results"):
+        if file.endswith(".json"):
+            with open(os.path.join("results", file), "r") as f:
+                file_results = json.load(f)
+                for result in file_results:
+                    key = (result["mode"], result["l"], result["w"])
+                    if key not in results:
+                        oldresult = (0, 0, 0)
+                    else:
+                        oldresult = results[key]
+                    results[key] = (oldresult[0] + result["time_mgm"], oldresult[1] + result["time_normal"],
+                                    oldresult[2] + result["runs"])
+    return [{"mode": key[0],
+             "l": key[1],
+             "w": key[2],
+             "time_mgm": value[0],
+             "time_normal": value[1],
+             "runs": value[2],
+             "percentage": value[1] / value[0] * 100} for key, value in results.items()]
+
+
+if __name__ == "__main__":
+    result = benchmark()
+
+    import json
+    import datetime
+
+    # save results to file with current timestamp
+    with open(f"benchmark-results/results-{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}.json", "w") as f:
+        json.dump(result, f, indent=4)
+
+    # combine results from all files in results folder
+    combined_results = combine_results()
+    with open("benchmark-results.json", "w") as f:
+        json.dump(combined_results, f, indent=4)
