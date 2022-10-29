@@ -92,9 +92,9 @@ def benchmark():
 
 def combine_results():
     results = {}
-    for file in os.listdir("results"):
+    for file in os.listdir("benchmark-results"):
         if file.endswith(".json"):
-            with open(os.path.join("results", file), "r") as f:
+            with open(os.path.join("benchmark-results", file), "r") as f:
                 file_results = json.load(f)
                 for result in file_results:
                     key = (result["mode"], result["l"], result["w"])
