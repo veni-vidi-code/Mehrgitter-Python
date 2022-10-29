@@ -36,20 +36,20 @@ def iter_steps_generatordef(matrices: Callable[[np.ndarray, np.ndarray, np.ndarr
     set_matrices = isinstance(matrices, tuple)
 
     m, nb = matrices(a, b, x, w) if not set_matrices else matrices
-    y = x.copy()
+    x = x.copy()
     total_steps = 0
     try:
         while True:
-            y = iter_step(m, nb, y)
+            x = iter_step(m, nb, x)
             total_steps += 1
-            new_w = yield y
+            new_w = yield x
             if new_w is not None:
                 if set_matrices:
                     raise ValueError("Cannot change w if matrices are given")
                 else:
                     m, nb = matrices(a, b, x, new_w)
     except GeneratorExit:
-        return y, total_steps
+        return x, total_steps
 
 
 def n_steps_of_generator(generator, n: int) -> np.ndarray:
