@@ -70,5 +70,77 @@
         "time_normal": 3836.1620054244995,
         "runs": 2,
         "percentage": 117897.78628079698
+    },
+    {
+        "mode": "gauss_seidel",
+        "l": 2,
+        "w": 0.25,
+        "time_mgm": 20.275291442871094,
+        "time_normal": 6.230010032653809,
+        "runs": 5000,
+        "percentage": 30.727104713675104
+    },
+    {
+        "mode": "gauss_seidel",
+        "l": 3,
+        "w": 0.25,
+        "time_mgm": 8.666189193725586,
+        "time_normal": 4.869701385498047,
+        "runs": 1000,
+        "percentage": 56.19195792567929
+    },
+    {
+        "mode": "gauss_seidel",
+        "l": 4,
+        "w": 0.25,
+        "time_mgm": 15.041122674942017,
+        "time_normal": 10.585865020751953,
+        "runs": 500,
+        "percentage": 70.3794872864619
+    },
+    {
+        "mode": "gauss_seidel",
+        "l": 5,
+        "w": 0.25,
+        "time_mgm": 10.003801584243774,
+        "time_normal": 10.320673942565918,
+        "runs": 100,
+        "percentage": 103.16751942402801
+    },
+    {
+        "mode": "gauss_seidel",
+        "l": 6,
+        "w": 0.25,
+        "time_mgm": 2.577285051345825,
+        "time_normal": 187.64236688613892,
+        "runs": 10,
+        "percentage": 7280.621396075475
+    },
+    {
+        "mode": "gauss_seidel",
+        "l": 7,
+        "w": 0.25,
+        "time_mgm": 0.7668139934539795,
+        "time_normal": 78.9714994430542,
+        "runs": 1,
+        "percentage": 10298.651317947511
+    },
+    {
+        "mode": "gauss_seidel",
+        "l": 8,
+        "w": 0.25,
+        "time_mgm": 2.0917279720306396,
+        "time_normal": 301.14653873443604,
+        "runs": 1,
+        "percentage": 14397.02211574311
+    },
+    {
+        "mode": "gauss_seidel",
+        "l": 9,
+        "w": 0.25,
+        "time_mgm": 7.443815469741821,
+        "time_normal": 1496.118989944458,
+        "runs": 1,
+        "percentage": 20098.818892354255
     }
 ]
