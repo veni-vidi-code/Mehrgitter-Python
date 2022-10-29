@@ -4,3 +4,4 @@ Flask-Caching
 orjson
 dash-bootstrap-components
 dash_daq
+pandas
