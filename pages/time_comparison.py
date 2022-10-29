@@ -82,8 +82,8 @@ def gauss_seidel_fig():
     table_df = gauss_seidel.drop(columns=["%", "book_results"], axis=1)
 
     gauss_seidel_table = go.Figure(go.Table(
-        header=dict(values=["Gitter", "Anzahl der Unbekannten", "Stichprobengröße",
-                            "Mehrgitterverfahren", "Gauss Seidel Verfahren"]),
+        header=dict(values=["Gitter", "Anzahl der Unbekannten", "Stichprobe",
+                            "MG Verfahren", "Gauss Seidel Verfahren"]),
         cells=dict(values=table_df.transpose().values.tolist(), align='right')))
 
     gauss_seidel["Verfahren"] = "Gauss Seidel"
