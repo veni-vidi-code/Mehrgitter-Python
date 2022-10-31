@@ -64,3 +64,19 @@ def mehgitterverfaren_steps(stufenindex_l: int, v1: int, v2: int, u: np.ndarray,
             yield x
     except GeneratorExit:
         return x, total_steps
+
+
+def get_start_vector(stufenindex_l: int, v: int, f: np.ndarray,
+                     smoother: Callable[[np.ndarray, np.ndarray, np.ndarray, float, bool],
+                                        Tuple[np.ndarray, np.ndarray]],
+                     w: float = 1, *,
+                     a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
+                     prolongation: Callable[[int], np.ndarray] = linear_prolongation) -> np.ndarray:
+    u = (1. / (a_func(0)[0])) * f
+    for i in range(1, stufenindex_l):
+        u = np.dot(prolongation(i), u)
+        if v >= 1:
+            gen = iter_steps_generatordef(smoother, a_func(i), u, f, w)
+            u = n_steps_of_generator(gen, v)
+        yield u
+    return u
