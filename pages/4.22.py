@@ -96,7 +96,6 @@ def generate_figure(stufenindex_l, w, start: np.ndarray, mode, *, v1: int=2, v2:
     fig.add_trace(go.Scatter(x=x, y=u_star, name=f"$$u^{{{stufenindex_l},\\star}}$$"))
     fig.add_trace(go.Scatter(x=x, y=u_mgm, name=f"$$u^{{{stufenindex_l},MGM}}$$"))
     fig.add_trace(go.Scatter(x=x, y=u_0, name=f"$$u_0^{{{stufenindex_l}}}$$"))
-    fig.add_trace(go.Scatter(x=x, y=(dirichlect_randwert_a_l(stufenindex_l) @ u_mgm) - f, name=f"$$abw$$"))
     return fig
 
 
