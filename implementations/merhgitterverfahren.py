@@ -1,8 +1,9 @@
+from queue import LifoQueue
 from typing import Callable, Optional, Tuple
 
 import numpy as np
 
-from implementations.Gitter import linear_prolongation, linear_restriction
+from implementations.Gitter import linear_prolongation, linear_restriction, trivial_restriction
 from implementations.dirichlect_ndarrays import dirichlect_randwert_a_l
 from implementations.helpers import iter_steps_generatordef, n_steps_of_generator
 
@@ -66,17 +67,39 @@ def mehgitterverfaren_steps(stufenindex_l: int, v1: int, v2: int, u: np.ndarray,
         return x, total_steps
 
 
+def get_start_vector_generator(stufenindex_l: int, v: int, f: np.ndarray,
+                               smoother: Callable[[np.ndarray, np.ndarray, np.ndarray, float, bool],
+                                                  Tuple[np.ndarray, np.ndarray]],
+                               w: float = 1, *,
+                               a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
+                               prolongation: Callable[[int], np.ndarray] = linear_prolongation,
+                               restriction: Callable[[int], np.ndarray] = trivial_restriction
+                               ) -> np.ndarray:
+    fs = LifoQueue()
+    temp_f = f
+    fs.put_nowait(f)
+    for i in range(stufenindex_l, 0, -1):
+        temp_f = np.dot(restriction(i), temp_f)
+        fs.put_nowait(temp_f)
+
+    u = (1. / (a_func(0)[0])) * fs.get_nowait()
+    for i in range(1, stufenindex_l + 1):
+        u = np.dot(prolongation(i), u)
+        if v >= 1:
+            gen = iter_steps_generatordef(smoother, a_func(i), u, fs.get_nowait(), w)
+            u = n_steps_of_generator(gen, v)
+        yield u
+    return u
+
+
 def get_start_vector(stufenindex_l: int, v: int, f: np.ndarray,
                      smoother: Callable[[np.ndarray, np.ndarray, np.ndarray, float, bool],
                                         Tuple[np.ndarray, np.ndarray]],
                      w: float = 1, *,
                      a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
                      prolongation: Callable[[int], np.ndarray] = linear_prolongation) -> np.ndarray:
-    u = (1. / (a_func(0)[0])) * f
-    for i in range(1, stufenindex_l):
-        u = np.dot(prolongation(i), u)
-        if v >= 1:
-            gen = iter_steps_generatordef(smoother, a_func(i), u, f, w)
-            u = n_steps_of_generator(gen, v)
-        yield u
-    return u
+    gen = get_start_vector_generator(stufenindex_l, v, f, smoother, w, a_func=a_func, prolongation=prolongation)
+    r = None
+    for _ in gen:
+        r = _
+    return r
