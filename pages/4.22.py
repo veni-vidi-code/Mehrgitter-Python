@@ -1,9 +1,9 @@
 import dash
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 import numpy as np
 import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ALL
-import dash_daq as daq
 
 from Utils.components import snipping_switch
 from implementations.Gitter import standard_schrittweitenfolge
@@ -153,7 +153,7 @@ def update_start_vector_div(stufenindex_l, w, vollstaendig, vector, n_clicks, mo
     if vollstaendig:
         f = f_x(x)
         matrices = jacobi_matrices if mode == "jacobi" else gauss_seidel_matrices
-        u_0 = get_start_vector(stufenindex_l, 15, f, matrices, 2 * w)
+        u_0 = get_start_vector(stufenindex_l, 2, f, matrices, 2 * w)
     else:
         u_star = u_x(x)
         if dash.ctx.triggered_id is None or dash.ctx.triggered_id.startswith("l-4-22"):
