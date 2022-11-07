@@ -75,7 +75,7 @@ def race(stufenindex_l, mode, w=0.25, runs=10, limit=1e-2):
 def benchmark():
     results = []
     l_to_runs = [0, 0, 5000, 1000, 500, 100, 10, 1, 1, 1, 1, 1, 1]
-    for mode in ["gauss_seidel"]:
+    for mode in ["jacobi", "gauss_seidel"]:
         for stufenindex_l in range(2, 10):
             for w in [0.25]:
                 print(f"running {mode} with l={stufenindex_l} and w={w}")

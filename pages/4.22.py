@@ -1,16 +1,16 @@
 import dash
 import dash_bootstrap_components as dbc
+import dash_daq as daq
 import numpy as np
 import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ALL
 
 from Utils.components import snipping_switch
 from implementations.Gitter import standard_schrittweitenfolge
-from implementations.dirichlect_ndarrays import dirichlect_randwert_a_l
 from implementations.gaussseidel import gauss_seidel_matrices
 from implementations.helpers import N_l
 from implementations.jacobi import jacobi_matrices
-from implementations.merhgitterverfahren import mehrgitterverfahren_rekursiv
+from implementations.merhgitterverfahren import mehrgitterverfahren_rekursiv, get_start_vector
 from pages.cache import cache
 
 dash.register_page(__name__, name="Lösungsentwicklung Mehrgitter", order=6)
@@ -37,6 +37,12 @@ layout = html.Div(children=[
     html.H1(children='Fehler Dämpfung'),
     html.Div([
         snipping_switch,
+        dbc.Row(
+            [dbc.Col("Vollständiges Mehrgitterverfahren", width="auto"),
+             dbc.Col(daq.BooleanSwitch(
+                 on=False,
+                 id="vollstaendig-4-22"
+             ), width="auto")]),
         "Gitter (l): ",
         dcc.Slider(2, max_l, 1, value=3, id="l-4-22"),
         "Dämpfung (w): ",
@@ -67,6 +73,18 @@ layout = html.Div(children=[
             id="collapse-4-22",
             is_open=False,
         ),
+        dbc.Button(
+            "Start Vektor",
+            id="collapse-start-vector-button-4-22",
+            color="info",
+            outline=True,
+            n_clicks=0,
+        ),
+        dbc.Collapse(
+            dbc.Card(dbc.CardBody([], id="start_vector_div-4-22")),
+            id="collapse-start-vector-4-22",
+            is_open=False,
+        ),
 
     ]),
     html.Br(),
@@ -74,45 +92,81 @@ layout = html.Div(children=[
 ])
 
 
+@cache.memoize()
 def f_x(x):
     return np.pi * np.pi / 8. * (9. * np.sin(3. * np.pi * x / 2.) + 25 * np.sin(5 * np.pi * x / 2.))
 
 
+@cache.memoize()
 def u_x(x):  # Lösung von f_x
     return np.sin(2. * np.pi * x) * np.cos(np.pi * x / 2.)
 
 
 @cache.memoize()
-def generate_figure(stufenindex_l, w, start: np.ndarray, mode, *, v1: int=2, v2: int=2, gamma: int = 1):
+def generate_figure(stufenindex_l, w, u_0: np.ndarray, mode, *, v1: int = 2, v2: int = 2, gamma: int = 1):
     x = standard_schrittweitenfolge(stufenindex_l)
     f = f_x(x)
     u_star = u_x(x)
-    u_0 = u_star + start
     matrices = jacobi_matrices if mode == "jacobi" else gauss_seidel_matrices
     u_mgm = mehrgitterverfahren_rekursiv(stufenindex_l, v1, v2, u_0, f, matrices, w1=2 * w, w2=2 * w, gamma=gamma)
     fig = go.Figure(layout=go.Layout(
         yaxis={"title": "$$u$$"},
         xaxis={"title": "$$x$$"}))
-    fig.add_trace(go.Scatter(x=x, y=u_star, name=f"$$u^{{{stufenindex_l},\\star}}$$"))
+    fig.add_trace(go.Scatter(x=x, y=u_star, name=f"$$u^{{{stufenindex_l},\\ast}}$$"))
     fig.add_trace(go.Scatter(x=x, y=u_mgm, name=f"$$u^{{{stufenindex_l},MGM}}$$"))
     fig.add_trace(go.Scatter(x=x, y=u_0, name=f"$$u_0^{{{stufenindex_l}}}$$"))
-    fig.add_trace(go.Scatter(x=x, y=(dirichlect_randwert_a_l(stufenindex_l) @ u_mgm) - f, name=f"$$abw$$"))
     return fig
 
 
-@callback(Output('graph-4-22', 'figure'), Output('fault_vector_div-4-22', 'children'),
+@callback(Output('graph-4-22', 'figure'),
           Input('l-4-22', 'value'),
           Input('w-4-22', 'value'),
-          State({'type': 'startfault-4-22', 'index': ALL}, 'value'),
-          Input('submit-button-4-22', 'n_clicks'), Input('tabs-jacobi-gaussseidel-switch', 'value'),
+          Input({'type': 'start-vector-4-22', 'index': ALL}, 'children'),
+          Input('tabs-jacobi-gaussseidel-switch', 'value'),
           Input('gamma-4-22', 'value'))
-def add_traces(stufenindex_l, w, vector, n_clicks, mode, gamma):
-    if dash.ctx.triggered_id is None or dash.ctx.triggered_id.startswith("l-4-22"):
+def add_traces(stufenindex_l, w, vector, mode, gamma):
+    if dash.ctx.triggered_id is None or \
+            (isinstance(dash.ctx.triggered_id, str) and dash.ctx.triggered_id.startswith("l-4-22")):
         vector = startfaults[stufenindex_l - 2]
         return generate_figure(stufenindex_l, w,
-                               np.array(vector), mode, gamma=int(gamma)), default_array_div[stufenindex_l - 1]
+                               np.array(vector), mode, gamma=int(gamma))
     else:
-        return generate_figure(stufenindex_l, w, np.array(vector), mode, gamma=int(gamma)), dash.no_update
+        return generate_figure(stufenindex_l, w, np.array(vector).astype(np.float64), mode, gamma=int(gamma))
+
+
+@callback(Output('fault_vector_div-4-22', 'children'),
+          Input('l-4-22', 'value'), )
+def update_fault_vector_div(stufenindex_l):
+    return default_array_div[stufenindex_l - 1]
+
+
+@callback(Output('start_vector_div-4-22', 'children'),
+          Input('l-4-22', 'value'),
+          Input('w-4-22', 'value'),
+          Input('vollstaendig-4-22', 'on'),
+          State({'type': 'startfault-4-22', 'index': ALL}, 'value'),
+          Input('submit-button-4-22', 'n_clicks'),
+          Input('tabs-jacobi-gaussseidel-switch', 'value'))
+@cache.memoize()
+def update_start_vector_div(stufenindex_l, w, vollstaendig, vector, n_clicks, mode):
+    x = standard_schrittweitenfolge(stufenindex_l)
+    if vollstaendig:
+        f = f_x(x)
+        matrices = jacobi_matrices if mode == "jacobi" else gauss_seidel_matrices
+        u_0 = get_start_vector(stufenindex_l, 2, f, matrices, 2 * w)
+    else:
+        u_star = u_x(x)
+        if dash.ctx.triggered_id is None or dash.ctx.triggered_id.startswith("l-4-22"):
+            vector = startfaults[stufenindex_l - 2]
+        else:
+            vector = np.array(vector).astype(np.float64)
+        u_0 = u_star + vector
+    list_of_elems = []
+    for i in range(len(u_0)):
+        list_of_elems.append(dbc.ListGroupItem(str(u_0[i]),
+                                               id={'type': 'start-vector-4-22',
+                                                   'index': i}))
+    return dbc.ListGroup(list_of_elems)
 
 
 @callback(Output('w-4-22', 'step'), Input('snapping', 'on'))
@@ -127,8 +181,30 @@ def snapping(value):
     Output("collapse-4-22", "is_open"),
     [Input("collapse-button-4-22", "n_clicks")],
     [State("collapse-4-22", "is_open")],
+    Input("vollstaendig-4-22", 'on'),
+)
+def toggle_collapse(n, is_open, vollstaendig):
+    if vollstaendig:
+        return False
+    if n:
+        return not is_open
+    return is_open
+
+
+@callback(
+    Output("collapse-start-vector-4-22", "is_open"),
+    [Input("collapse-start-vector-button-4-22", "n_clicks")],
+    [State("collapse-start-vector-4-22", "is_open")],
 )
 def toggle_collapse(n, is_open):
     if n:
         return not is_open
     return is_open
+
+
+@callback(
+    Output("collapse-button-4-22", "disabled"),
+    Input('vollstaendig-4-22', 'on'),
+)
+def toggle_collapse(vollstaendig):
+    return vollstaendig

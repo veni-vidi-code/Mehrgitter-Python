@@ -3,144 +3,144 @@
         "mode": "jacobi",
         "l": 2,
         "w": 0.25,
-        "time_mgm": 39.545188665390015,
-        "time_normal": 51.33174276351929,
-        "runs": 35000,
-        "percentage": 129.8052797215376
+        "time_mgm": 45.345197439193726,
+        "time_normal": 58.637266635894775,
+        "runs": 40000,
+        "percentage": 129.31306940393245
     },
     {
         "mode": "jacobi",
         "l": 3,
         "w": 0.25,
-        "time_mgm": 13.439164876937866,
-        "time_normal": 42.17758226394653,
-        "runs": 7000,
-        "percentage": 313.8407977740114
+        "time_mgm": 15.42280387878418,
+        "time_normal": 48.281845808029175,
+        "runs": 8000,
+        "percentage": 313.05491652167314
     },
     {
         "mode": "jacobi",
         "l": 4,
         "w": 0.25,
-        "time_mgm": 10.904258966445923,
-        "time_normal": 90.17195105552673,
-        "runs": 3500,
-        "percentage": 826.9424940566769
+        "time_mgm": 12.414031744003296,
+        "time_normal": 102.91198492050171,
+        "runs": 4000,
+        "percentage": 828.9972753631326
     },
     {
         "mode": "jacobi",
         "l": 5,
         "w": 0.25,
-        "time_mgm": 3.7375948429107666,
-        "time_normal": 86.01906871795654,
-        "runs": 700,
-        "percentage": 2301.4551424992483
+        "time_mgm": 4.274436950683594,
+        "time_normal": 98.36128306388855,
+        "runs": 800,
+        "percentage": 2301.1518054596177
     },
     {
         "mode": "jacobi",
         "l": 6,
         "w": 0.25,
-        "time_mgm": 1.657768964767456,
-        "time_normal": 1236.7153632640839,
-        "runs": 50,
-        "percentage": 74601.1892819796
+        "time_mgm": 1.982691764831543,
+        "time_normal": 1485.5456104278564,
+        "runs": 60,
+        "percentage": 74925.69630731654
     },
     {
         "mode": "jacobi",
         "l": 7,
         "w": 0.25,
-        "time_mgm": 0.9770841598510742,
-        "time_normal": 932.8417422771454,
-        "runs": 9,
-        "percentage": 95471.99520861414
+        "time_mgm": 1.082087516784668,
+        "time_normal": 1037.1680552959442,
+        "runs": 10,
+        "percentage": 95848.814371115
     },
     {
         "mode": "jacobi",
         "l": 8,
         "w": 0.25,
-        "time_mgm": 3.19327449798584,
-        "time_normal": 3473.766578435898,
-        "runs": 9,
-        "percentage": 108783.83867803968
+        "time_mgm": 3.5683770179748535,
+        "time_normal": 3878.1390068531036,
+        "runs": 10,
+        "percentage": 108680.75282734692
     },
     {
         "mode": "jacobi",
         "l": 9,
         "w": 0.25,
-        "time_mgm": 3.253803253173828,
-        "time_normal": 3836.1620054244995,
-        "runs": 2,
-        "percentage": 117897.78628079698
+        "time_mgm": 4.844899654388428,
+        "time_normal": 5672.648222208023,
+        "runs": 3,
+        "percentage": 117084.94761227582
     },
     {
         "mode": "gauss_seidel",
         "l": 2,
         "w": 0.25,
-        "time_mgm": 20.275291442871094,
-        "time_normal": 6.230010032653809,
-        "runs": 5000,
-        "percentage": 30.727104713675104
+        "time_mgm": 40.48755431175232,
+        "time_normal": 12.035854816436768,
+        "runs": 10000,
+        "percentage": 29.72729526649408
     },
     {
         "mode": "gauss_seidel",
         "l": 3,
         "w": 0.25,
-        "time_mgm": 8.666189193725586,
-        "time_normal": 4.869701385498047,
-        "runs": 1000,
-        "percentage": 56.19195792567929
+        "time_mgm": 16.448425769805908,
+        "time_normal": 9.680381059646606,
+        "runs": 2000,
+        "percentage": 58.8529333756469
     },
     {
         "mode": "gauss_seidel",
         "l": 4,
         "w": 0.25,
-        "time_mgm": 15.041122674942017,
-        "time_normal": 10.585865020751953,
-        "runs": 500,
-        "percentage": 70.3794872864619
+        "time_mgm": 29.07911992073059,
+        "time_normal": 21.4067964553833,
+        "runs": 1000,
+        "percentage": 73.61569577668797
     },
     {
         "mode": "gauss_seidel",
         "l": 5,
         "w": 0.25,
-        "time_mgm": 10.003801584243774,
-        "time_normal": 10.320673942565918,
-        "runs": 100,
-        "percentage": 103.16751942402801
+        "time_mgm": 18.819586515426636,
+        "time_normal": 20.770768642425537,
+        "runs": 200,
+        "percentage": 110.36782676069687
     },
     {
         "mode": "gauss_seidel",
         "l": 6,
         "w": 0.25,
-        "time_mgm": 2.577285051345825,
-        "time_normal": 187.64236688613892,
-        "runs": 10,
-        "percentage": 7280.621396075475
+        "time_mgm": 4.918569326400757,
+        "time_normal": 374.8180673122406,
+        "runs": 20,
+        "percentage": 7620.469336487319
     },
     {
         "mode": "gauss_seidel",
         "l": 7,
         "w": 0.25,
-        "time_mgm": 0.7668139934539795,
-        "time_normal": 78.9714994430542,
-        "runs": 1,
-        "percentage": 10298.651317947511
+        "time_mgm": 1.5540990829467773,
+        "time_normal": 156.06639289855957,
+        "runs": 2,
+        "percentage": 10042.242133148748
     },
     {
         "mode": "gauss_seidel",
         "l": 8,
         "w": 0.25,
-        "time_mgm": 2.0917279720306396,
-        "time_normal": 301.14653873443604,
-        "runs": 1,
-        "percentage": 14397.02211574311
+        "time_mgm": 3.796778678894043,
+        "time_normal": 606.4705336093903,
+        "runs": 2,
+        "percentage": 15973.291700691072
     },
     {
         "mode": "gauss_seidel",
         "l": 9,
         "w": 0.25,
-        "time_mgm": 7.443815469741821,
-        "time_normal": 1496.118989944458,
-        "runs": 1,
-        "percentage": 20098.818892354255
+        "time_mgm": 15.029629945755005,
+        "time_normal": 3696.1713466644287,
+        "runs": 2,
+        "percentage": 24592.563888829358
     }
 ]
