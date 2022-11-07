@@ -3,8 +3,9 @@ import dash_bootstrap_components as dbc
 import numpy as np
 import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ALL
+from dash.exceptions import PreventUpdate
 
-from Utils.components import snipping_switch
+from Utils.components import snipping_switch, w_check, stufenindex_l_check, vec_check
 from implementations.dirichlect import get_dirichlect_generator
 from implementations.gaussseidel import gauss_seidel_matrices
 from implementations.helpers import N_l
@@ -130,6 +131,12 @@ def _generate_fig(stufenindex_l, w, start: np.ndarray, mode, additional_traces):
           Input('submit-button-4-9', 'n_clicks'), Input('tabs-jacobi-gaussseidel-switch', 'value'),
           Input('additional-taces-4-9', 'value'))
 def add_traces(stufenindex_l, w, vector, n_clicks, mode, additional_traces):
+    w_check(w, -1e-6, 0.5)
+    stufenindex_l_check(stufenindex_l, 1, max_l)
+    vec_check(vector)
+    if not isinstance(additional_traces, list):
+        raise PreventUpdate
+
     if dash.ctx.triggered_id is None or dash.ctx.triggered_id.startswith("l-4-9"):
         vector = startfaults[stufenindex_l - 1]
         return _generate_fig(stufenindex_l, w, np.array(vector),

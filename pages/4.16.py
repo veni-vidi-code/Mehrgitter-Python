@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State
 
 import implementations.dirichlect_ndarrays as dirichlect
+from Utils.components import stufenindex_l_check
 from implementations.helpers import N_l
 from implementations.ggk import ggk_Psi_l
 from pages.cache import cache
@@ -26,6 +27,9 @@ layout = html.Div(children=[
 @cache.memoize()
 def change_gitter(stufenindex_l, j):
     # Dies würde sich auch effizienter mit Satz 4.53 berechnen lassen, aber zur Demonstration reicht das hier.
+    stufenindex_l_check(stufenindex_l, 2, 10)
+    stufenindex_l_check(j, 1, N_l(stufenindex_l))
+
     fig = go.Figure(layout=go.Layout(xaxis={"title": "$$k$$"}))
     e_l_j = dirichlect.fourier_mode(stufenindex_l, j, False)
     y = ggk_Psi_l(stufenindex_l, e_l_j)
@@ -41,6 +45,7 @@ def change_gitter(stufenindex_l, j):
           Input('l-4-16', 'value'), State('j-4-16', 'value'))
 def change_j_max(stufenindex_l, j):
     n = N_l(stufenindex_l)
+    stufenindex_l_check(stufenindex_l, 2, 10)
 
     if stufenindex_l > 5:
         return n, min(n, j), {"placement": "bottom", "always_visible": True}, None

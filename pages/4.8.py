@@ -4,7 +4,7 @@ import numpy as np
 import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ctx
 
-from Utils.components import snipping_switch
+from Utils.components import snipping_switch, w_check, stufenindex_l_check, fig_check
 from implementations.dirichlect import get_dirichlect_generator
 from implementations.helpers import N_l
 from pages.cache import cache
@@ -18,7 +18,7 @@ layout = html.Div(children=[
         "Gitter (l): ",
         dcc.Slider(1, 5, 1, value=3, id="l-4-8"),
         "Dämpfung (w): ",
-        dcc.Slider(0, 0.5, step=1e-6, marks={
+        dcc.Slider(1e-6, 0.5, step=1e-6, marks={
             1: '1',
             0.5: '1/2',
             1 / 3: '1/3',
@@ -72,6 +72,10 @@ def _add_iters_trace(stufenindex_l, w, fig, mode=""):
           Input('submit-button-4-8', 'n_clicks'), Input('l-4-8', 'value'),
           State('w-4-8', 'value'), State('iter-graph-4-8', 'figure'), Input('tabs-jacobi-gaussseidel-switch', 'value'))
 def add_traces(n_clicks, stufenindex_l, w, fig, mode):
+    w_check(w, 0, 0.5)
+    stufenindex_l_check(stufenindex_l, 1, 5)
+    fig_check(fig)
+
     if ctx.triggered_id is not None and ctx.triggered_id.startswith('submit-button-4-8'):
         fig = go.Figure(fig)
         _add_iters_trace(stufenindex_l, w, fig, mode)

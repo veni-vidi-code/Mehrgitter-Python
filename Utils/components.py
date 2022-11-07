@@ -3,6 +3,8 @@ import dash_daq as daq
 from dash import dcc, html, Output, Input, State
 from os.path import exists
 
+from dash.exceptions import PreventUpdate
+
 from pages.cache import cache
 
 snipping_switch = dbc.Row(
@@ -79,3 +81,27 @@ def add_callbacks(app):
             return title, dcc.Markdown(markdown, mathjax=True)
         else:
             return "Info", dcc.Markdown("Zu dieser Seite gibt es keine Info")
+
+
+def w_check(w, infimum=0, maximum=1):
+    if not ((isinstance(w, float) or isinstance(w, int)) and infimum < w <= maximum):
+        print("w", w)
+        raise PreventUpdate
+
+
+def stufenindex_l_check(stufenindex_l, minimum=0, maximum=10):
+    if not (isinstance(stufenindex_l, int) and minimum <= stufenindex_l <= maximum):
+        print("stufenindex_l", stufenindex_l)
+        raise PreventUpdate
+
+
+def fig_check(fig):
+    if fig is not None and not (isinstance(fig, dict) and 'data' in fig and 'layout' in fig):
+        print("fig", fig)
+        raise PreventUpdate
+
+
+def vec_check(vector):
+    if not (isinstance(vector, list)):
+        print("vector", vector)
+        raise PreventUpdate
