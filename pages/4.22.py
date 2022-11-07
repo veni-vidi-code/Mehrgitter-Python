@@ -112,7 +112,7 @@ def generate_figure(stufenindex_l, w, u_0: np.ndarray, mode, *, v1: int = 2, v2:
     fig = go.Figure(layout=go.Layout(
         yaxis={"title": "$$u$$"},
         xaxis={"title": "$$x$$"}))
-    fig.add_trace(go.Scatter(x=x, y=u_star, name=f"$$u^{{{stufenindex_l},\\star}}$$"))
+    fig.add_trace(go.Scatter(x=x, y=u_star, name=f"$$u^{{{stufenindex_l},\\ast}}$$"))
     fig.add_trace(go.Scatter(x=x, y=u_mgm, name=f"$$u^{{{stufenindex_l},MGM}}$$"))
     fig.add_trace(go.Scatter(x=x, y=u_0, name=f"$$u_0^{{{stufenindex_l}}}$$"))
     return fig
