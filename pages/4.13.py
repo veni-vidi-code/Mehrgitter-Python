@@ -3,7 +3,9 @@ import dash_bootstrap_components as dbc
 import dash_daq as daq
 import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State
+from dash.exceptions import PreventUpdate
 
+from Utils.components import stufenindex_l_check
 from implementations import dirichlect_ndarrays
 from implementations.Gitter import LINEAR_GITTERHIERACHIE, TRIVIAL_GITTERHIERACHIE
 from implementations.helpers import N_l
@@ -44,6 +46,15 @@ layout = html.Div(children=[
           Input('richtung', 'value'))
 @cache.memoize()
 def change_gitter(stufenindex_l, j, scale, direction):
+    stufenindex_l_check(stufenindex_l, 1, 10)
+    if not isinstance(scale, bool):
+        raise PreventUpdate
+    if direction == 'r':
+        n = N_l(stufenindex_l)
+    else:
+        n = N_l(stufenindex_l - 1)
+    stufenindex_l_check(j, 1, n)
+
     fig = go.Figure(layout=go.Layout(xaxis={"title": "$$k$$"}))
     linear_gitter = LINEAR_GITTERHIERACHIE
     e_l_j = dirichlect_ndarrays.fourier_mode(stufenindex_l, j, scale)
@@ -73,6 +84,7 @@ def change_gitter(stufenindex_l, j, scale, direction):
 @callback(Output('j', 'max'), Output('j', 'value'), Output('j', "tooltip"), Output('j', "marks"),
           Input('l', 'value'), State('j', 'value'), Input('richtung', 'value'))
 def change_j_max(stufenindex_l, j, direction):
+    stufenindex_l_check(stufenindex_l, 1, 10)
     if direction == 'r':
         n = N_l(stufenindex_l)
     else:

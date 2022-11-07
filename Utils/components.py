@@ -3,6 +3,8 @@ import dash_daq as daq
 from dash import dcc, html, Output, Input, State
 from os.path import exists
 
+from dash.exceptions import PreventUpdate
+
 from pages.cache import cache
 
 snipping_switch = dbc.Row(
@@ -36,19 +38,14 @@ canvas = dbc.Offcanvas("", id="offcanvas", is_open=False, title="")
 
 
 def add_callbacks(app):
-    @app.callback(Output('offcanvas', 'is_open'),
-                  Input('btn-info', 'n_clicks'),
-                  State('offcanvas', 'is_open'), prevent_initial_call=True)
-    def toggle_offcanvas(n, is_open):
-        return not is_open
+    app.clientside_callback("function(n, is_open) {return !is_open;}",
+                            Output('offcanvas', 'is_open'),
+                            Input('btn-info', 'n_clicks'),
+                            State('offcanvas', 'is_open'), prevent_initial_call=True)
 
-    @app.callback(Output('div-jacobi-gaussseidel-switch', 'hidden'),
-                  Input('url', 'pathname'))
-    def hide_jacobi_gaussseidel_switch(pathname):
-        if pathname in ["/", "/4/7", "/4/13", "/4/16"]:  # A few pages don't need the switch
-            return True
-        else:
-            return False
+    app.clientside_callback('function(pathname) {return ["/", "/4/7", "/4/13", "/4/16"].includes(pathname);}',
+                            Output('div-jacobi-gaussseidel-switch', 'hidden'),
+                            Input('url', 'pathname'))
 
     @app.callback(Output('offcanvas', 'title'),
                   Output('offcanvas', 'children'),
@@ -84,3 +81,27 @@ def add_callbacks(app):
             return title, dcc.Markdown(markdown, mathjax=True)
         else:
             return "Info", dcc.Markdown("Zu dieser Seite gibt es keine Info")
+
+
+def w_check(w, infimum=0, maximum=1):
+    if not ((isinstance(w, float) or isinstance(w, int)) and infimum < w <= maximum):
+        print("w", w)
+        raise PreventUpdate
+
+
+def stufenindex_l_check(stufenindex_l, minimum=0, maximum=10):
+    if not (isinstance(stufenindex_l, int) and minimum <= stufenindex_l <= maximum):
+        print("stufenindex_l", stufenindex_l)
+        raise PreventUpdate
+
+
+def fig_check(fig):
+    if fig is not None and not (isinstance(fig, dict) and 'data' in fig and 'layout' in fig):
+        print("fig", fig)
+        raise PreventUpdate
+
+
+def vec_check(vector):
+    if not (isinstance(vector, list)):
+        print("vector", vector)
+        raise PreventUpdate

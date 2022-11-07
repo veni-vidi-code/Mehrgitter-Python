@@ -5,7 +5,7 @@ import numpy as np
 import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ALL
 
-from Utils.components import snipping_switch
+from Utils.components import snipping_switch, stufenindex_l_check, w_check, vec_check
 from implementations.Gitter import standard_schrittweitenfolge
 from implementations.gaussseidel import gauss_seidel_matrices
 from implementations.helpers import N_l
@@ -125,6 +125,11 @@ def generate_figure(stufenindex_l, w, u_0: np.ndarray, mode, *, v1: int = 2, v2:
           Input('tabs-jacobi-gaussseidel-switch', 'value'),
           Input('gamma-4-22', 'value'))
 def add_traces(stufenindex_l, w, vector, mode, gamma):
+    stufenindex_l_check(stufenindex_l, 2, max_l)
+    w_check(w, -1e-6, 0.5)
+    vec_check(vector)
+    stufenindex_l_check(gamma, 1, 3)
+
     if dash.ctx.triggered_id is None or \
             (isinstance(dash.ctx.triggered_id, str) and dash.ctx.triggered_id.startswith("l-4-22")):
         vector = startfaults[stufenindex_l - 2]
@@ -149,6 +154,10 @@ def update_fault_vector_div(stufenindex_l):
           Input('tabs-jacobi-gaussseidel-switch', 'value'))
 @cache.memoize()
 def update_start_vector_div(stufenindex_l, w, vollstaendig, vector, n_clicks, mode):
+    stufenindex_l_check(stufenindex_l, 2, max_l)
+    w_check(w, -1e-6, 0.5)
+    vec_check(vector)
+
     x = standard_schrittweitenfolge(stufenindex_l)
     if vollstaendig:
         f = f_x(x)
@@ -169,42 +178,29 @@ def update_start_vector_div(stufenindex_l, w, vollstaendig, vector, n_clicks, mo
     return dbc.ListGroup(list_of_elems)
 
 
-@callback(Output('w-4-22', 'step'), Input('snapping', 'on'))
-def snapping(value):
-    if value:
-        return None
-    else:
-        return 1e-6
+# Clientside callbacks
 
+dash.clientside_callback("function (value) {if (value) {return null} else {return 1e-6}}",
+                         Output('w-4-22', 'step'),
+                         Input('snapping', 'on'))
 
-@callback(
-    Output("collapse-4-22", "is_open"),
-    [Input("collapse-button-4-22", "n_clicks")],
-    [State("collapse-4-22", "is_open")],
-    Input("vollstaendig-4-22", 'on'),
-)
-def toggle_collapse(n, is_open, vollstaendig):
-    if vollstaendig:
-        return False
-    if n:
-        return not is_open
-    return is_open
+dash.clientside_callback("function (n, vollstaendig, is_open) {"
+                         "const triggered = dash_clientside.callback_context.triggered.map(t => t.prop_id);"
+                         "if (triggered.includes('vollstaendig-4-22.on')) {"
+                         "return false;"
+                         "}"
+                         "if (vollstaendig) {return false;} "
+                         "if (n) {return !is_open;} else {return is_open;}}",
+                         Output("collapse-4-22", "is_open"),
+                         Input("collapse-button-4-22", "n_clicks"),
+                         Input("vollstaendig-4-22", 'on'),
+                         State("collapse-4-22", "is_open"))
 
+dash.clientside_callback("function (n, is_open) {if (n) {return !is_open;} else {return is_open;}}",
+                         Output("collapse-start-vector-4-22", "is_open"),
+                         Input("collapse-start-vector-button-4-22", "n_clicks"),
+                         State("collapse-start-vector-4-22", "is_open"))
 
-@callback(
-    Output("collapse-start-vector-4-22", "is_open"),
-    [Input("collapse-start-vector-button-4-22", "n_clicks")],
-    [State("collapse-start-vector-4-22", "is_open")],
-)
-def toggle_collapse(n, is_open):
-    if n:
-        return not is_open
-    return is_open
-
-
-@callback(
-    Output("collapse-button-4-22", "disabled"),
-    Input('vollstaendig-4-22', 'on'),
-)
-def toggle_collapse(vollstaendig):
-    return vollstaendig
+dash.clientside_callback("function (vollstaendig) {return vollstaendig;}",
+                         Output("collapse-button-4-22", "disabled"),
+                         Input('vollstaendig-4-22', 'on'))

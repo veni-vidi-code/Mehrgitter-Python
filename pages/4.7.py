@@ -3,7 +3,7 @@ import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ctx
 
-from Utils.components import snipping_switch
+from Utils.components import snipping_switch, w_check, stufenindex_l_check, fig_check
 from implementations import dirichlect_ndarrays
 from implementations.helpers import N_l
 
@@ -47,6 +47,10 @@ def _add_eigenvalues_trace(stufenindex_l, w, fig):
           Input('submit-button', 'n_clicks'), Input('l', 'value'),
           State('w', 'value'), State('eigenvalues', 'figure'))
 def add_eigenvalues(n_clicks, stufenindex_l, w, fig):
+    w_check(w, -1e-6, 1)
+    stufenindex_l_check(stufenindex_l, 1, 5)
+    fig_check(fig)
+
     if ctx.triggered_id is not None and ctx.triggered_id.startswith('submit-button'):
         fig = go.Figure(fig)
         _add_eigenvalues_trace(stufenindex_l, w, fig)
@@ -59,9 +63,8 @@ def add_eigenvalues(n_clicks, stufenindex_l, w, fig):
         return fig, 0.5
 
 
-@callback(Output('w', 'step'), Input('snapping', 'on'))
-def snapping(value):
-    if value:
-        return None
-    else:
-        return 1e-6
+# Clientside callbacks
+
+dash.clientside_callback("function (value) {if (value) {return null} else {return 1e-6}}",
+                         Output('w', 'step'),
+                         Input('snapping', 'on'))
