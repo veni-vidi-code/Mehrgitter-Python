@@ -84,9 +84,8 @@ def add_traces(n_clicks, stufenindex_l, w, fig, mode):
         return fig, 0.5
 
 
-@callback(Output('w-4-8', 'step'), Input('snapping', 'on'))
-def snapping(value):
-    if value:
-        return None
-    else:
-        return 1e-6
+# Clientside callbacks
+
+dash.clientside_callback("function (value) {if (value) {return null} else {return 1e-6}}",
+                         Output('w-4-8', 'step'),
+                         Input('snapping', 'on'))

@@ -59,9 +59,8 @@ def add_eigenvalues(n_clicks, stufenindex_l, w, fig):
         return fig, 0.5
 
 
-@callback(Output('w', 'step'), Input('snapping', 'on'))
-def snapping(value):
-    if value:
-        return None
-    else:
-        return 1e-6
+# Clientside callbacks
+
+dash.clientside_callback("function (value) {if (value) {return null} else {return 1e-6}}",
+                         Output('w', 'step'),
+                         Input('snapping', 'on'))

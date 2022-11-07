@@ -138,20 +138,13 @@ def add_traces(stufenindex_l, w, vector, n_clicks, mode, additional_traces):
         return _generate_fig(stufenindex_l, w, np.array(vector), mode, additional_traces), dash.no_update
 
 
-@callback(Output('w-4-9', 'step'), Input('snapping', 'on'))
-def snapping(value):
-    if value:
-        return None
-    else:
-        return 1e-6
+# Clientside callbacks
 
+dash.clientside_callback("function (value) {if (value) {return null} else {return 1e-6}}",
+                         Output('w-4-9', 'step'),
+                         Input('snapping', 'on'))
 
-@callback(
-    Output("collapse-4-9", "is_open"),
-    [Input("collapse-button-4-9", "n_clicks")],
-    [State("collapse-4-9", "is_open")],
-)
-def toggle_collapse(n, is_open):
-    if n:
-        return not is_open
-    return is_open
+dash.clientside_callback("function (n, is_open) {if (n) {return !is_open;} else {return is_open;}}",
+                         Output("collapse-4-9", "is_open"),
+                         Input("collapse-button-4-9", "n_clicks"),
+                         State("collapse-4-9", "is_open"))

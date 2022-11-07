@@ -36,19 +36,14 @@ canvas = dbc.Offcanvas("", id="offcanvas", is_open=False, title="")
 
 
 def add_callbacks(app):
-    @app.callback(Output('offcanvas', 'is_open'),
-                  Input('btn-info', 'n_clicks'),
-                  State('offcanvas', 'is_open'), prevent_initial_call=True)
-    def toggle_offcanvas(n, is_open):
-        return not is_open
+    app.clientside_callback("function(n, is_open) {return !is_open;}",
+                            Output('offcanvas', 'is_open'),
+                            Input('btn-info', 'n_clicks'),
+                            State('offcanvas', 'is_open'), prevent_initial_call=True)
 
-    @app.callback(Output('div-jacobi-gaussseidel-switch', 'hidden'),
-                  Input('url', 'pathname'))
-    def hide_jacobi_gaussseidel_switch(pathname):
-        if pathname in ["/", "/4/7", "/4/13", "/4/16"]:  # A few pages don't need the switch
-            return True
-        else:
-            return False
+    app.clientside_callback('function(pathname) {return ["/", "/4/7", "/4/13", "/4/16"].includes(pathname);}',
+                            Output('div-jacobi-gaussseidel-switch', 'hidden'),
+                            Input('url', 'pathname'))
 
     @app.callback(Output('offcanvas', 'title'),
                   Output('offcanvas', 'children'),
