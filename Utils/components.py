@@ -27,10 +27,13 @@ jacobi_gaussseidel_switch = html.Div(dcc.Tabs(id="tabs-jacobi-gaussseidel-switch
 
 footer = html.Footer(
     dbc.Container([
-        dbc.Row([dbc.Col("© Tom Mucke", className="ml-auto pull-left"),
-                 dbc.Col(dbc.Button("Info", n_clicks=0, color="info", id="btn-info", outline=True),
-                         className="pull-right d-grid gap-2 col-6 mx-aut")],
-                className="justify-content-between")],
+        dbc.Row([dbc.Col(
+            dbc.Button("Github", color="info", outline=True, href="https://github.com/veni-vidi-code/Mehrgitter-Python",
+                       target="_blank"),
+            className="ml-auto pull-left"),
+            dbc.Col(dbc.Button("Info", n_clicks=0, color="info", id="btn-info", outline=True),
+                    className="pull-right d-grid gap-2 col-6 mx-aut")],
+            className="justify-content-between")],
         fluid=True),
     className="fixed-bottom mb-2")
 
