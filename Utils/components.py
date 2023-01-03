@@ -46,9 +46,10 @@ def add_callbacks(app):
                             Input('btn-info', 'n_clicks'),
                             State('offcanvas', 'is_open'), prevent_initial_call=True)
 
-    app.clientside_callback('function(pathname) {return ["/", "/4/7", "/4/13", "/4/16"].includes(pathname);}',
-                            Output('div-jacobi-gaussseidel-switch', 'hidden'),
-                            Input('url', 'pathname'))
+    app.clientside_callback(
+        'function(pathname) {return ["/", "/4/7", "/4/13", "/4/16", "/step-vis", "/read-more"].includes(pathname);}',
+        Output('div-jacobi-gaussseidel-switch', 'hidden'),
+        Input('url', 'pathname'))
 
     @app.callback(Output('offcanvas', 'title'),
                   Output('offcanvas', 'children'),
