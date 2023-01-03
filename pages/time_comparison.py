@@ -66,8 +66,18 @@ def jacobi_fig():
     multigrid = jacobi.copy()
     multigrid["Verfahren"] = "Mehrgitter"
     multigrid["%"] = 100
-    table_bar = pd.concat([multigrid, jacobi])
+    bookvalues = jacobi.loc[jacobi['book_results'] != ''].copy()
+    bookvalues["Verfahren"] = "Buch"
+
+    def modify_row(row):
+        row["%"] = int(row["book_results"].rstrip("%").replace(" ", ""))
+        return row
+
+    bookvalues = bookvalues.apply(modify_row, axis=1)
+
+    table_bar = pd.concat([multigrid, jacobi, bookvalues])
     table_bar["%_string"] = table_bar["%"].apply(lambda x: f'{x:,.2f}%')
+
     bar = px.bar(table_bar, x="Gitter", y="%", barmode="group", color="Verfahren", text="%_string")
     return jacobi_table, bar
 
