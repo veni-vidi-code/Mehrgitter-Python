@@ -1,4 +1,4 @@
-AMGx (Nvidia)
+# AMGx (Nvidia)
 https://developer.nvidia.com/amgx
 AMGx ist eine von Nvidia entwickelte Open Source Libary die auf NVIDIA GPUs läuft.
 Sie ist in Cuda und C++ geschrieben und dient insbesondere der Beschleunigung vcon Simulationen.

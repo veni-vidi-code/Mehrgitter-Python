@@ -30,7 +30,8 @@ def layout():
 
         if os.path.isfile(path):
             with open(path, "r", encoding="utf-8") as f:
-                title = f.readline()
+                # Remove # from the beginning of the title
+                title = f.readline().strip("#").strip()
                 url = f.readline()
                 description = f.read()
 

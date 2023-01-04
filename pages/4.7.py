@@ -10,7 +10,7 @@ from implementations.helpers import N_l
 dash.register_page(__name__, name="Eigenwerte", order=1)
 
 layout = html.Div(children=[
-    html.H1(children='Eigenwerte Fourier Moden'),
+    html.H1(children='Eigenwerte Iterationsmatrix'),
     html.Div([
         snipping_switch,
         "Gitter (l): ",

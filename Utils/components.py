@@ -69,7 +69,7 @@ def add_callbacks(app):
         path = "assets/markdownpagesexplanation/" + filename
         if exists(path):
             with open(path, "r", encoding="utf-8") as f:
-                title = f.readline()
+                title = f.readline().strip("#").strip()
                 markdown = f.read()
 
             if title == "":
