@@ -69,11 +69,8 @@ def add_callbacks(app):
         path = "assets/markdownpagesexplanation/" + filename
         if exists(path):
             with open(path, "r", encoding="utf-8") as f:
+                title = f.readline().strip("#").strip()
                 markdown = f.read()
-            # set title to first line of markdown file
-            title = markdown.split("\n")[0]
-            # remove first line of markdown file by slicing its amount of charcter
-            markdown = markdown[len(title) + 1:]
 
             if title == "":
                 title = "Info"
