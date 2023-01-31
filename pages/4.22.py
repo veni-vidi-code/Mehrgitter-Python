@@ -35,7 +35,7 @@ for l in range(1, max_l + 1):
     default_array_div.append(x)
 
 layout = html.Div(children=[
-    html.H1(children='Fehler Dämpfung'),
+    html.H1(children='Lösungsentwicklung Mehrgitter'),
     html.Div([
         snipping_switch,
         dcc.Dropdown(['MGM', 'Vollst. MGM', 'ZGM'], 'MGM', id='methode-4-22'),
