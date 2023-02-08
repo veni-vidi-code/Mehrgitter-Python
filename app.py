@@ -1,3 +1,11 @@
+"""
+Diese Datei dient als Einstiegspunkt für die Anwendung.
+
+Hier werden die einzelnen Seiten registriert und die Dash-App
+initialisiert. Wird die Datei direkt ausgeführt, wird die App
+im Debug-Modus gestartet.
+"""
+
 import dash
 import dash_bootstrap_components as dbc
 import flask

@@ -4,6 +4,9 @@ from implementations.helpers import MATRIXFOLGENFUNKTION, N_l
 
 
 def standard_schrittweitenfolge(stufenindex_l: int) -> np.ndarray:
+    """
+    Gibt ein Homogenes Gitter auf Stufe \\ell zurück
+    """
     assert stufenindex_l >= 0
     h = 2 ** (-(stufenindex_l + 1))
     return np.arange(start=h, stop=1, step=h, dtype=np.float64)
@@ -11,7 +14,8 @@ def standard_schrittweitenfolge(stufenindex_l: int) -> np.ndarray:
 
 class Gitterhierachie:
     """
-    Class which should construct the Omega l's and gives the Prolongation and Restriktion
+    Klasse welche die Gitterhierachie beschreibt.
+    Die Klasse enthält die Gitterfolge, die Restriktions- und Prolongationsmatrizenfunktionen
     """
 
     def __init__(self, gitterfolgen: MATRIXFOLGENFUNKTION,

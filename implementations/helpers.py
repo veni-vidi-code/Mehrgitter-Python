@@ -2,7 +2,9 @@ from __future__ import annotations  # back support for python 3.8 & 3.9
 
 import numpy as np
 
-from typing import Callable, Tuple
+from typing import Callable, Tuple, Generator, Any
+
+from numpy import ndarray
 
 MATRIXFOLGENFUNKTION = Callable[[int], np.ndarray]
 
@@ -29,9 +31,18 @@ def iter_tests(a: np.ndarray, diagonals: np.ndarray, x: np.ndarray):
 
 def iter_steps_generatordef(matrices: Callable[[np.ndarray, np.ndarray, np.ndarray, float],
                                                Tuple[np.ndarray, np.ndarray]] | Tuple[np.ndarray, np.ndarray],
-                            a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1):
+                            a: np.ndarray, x: np.ndarray, b: np.ndarray, w: float = 1) \
+        -> Generator[np.ndarray, Any, Tuple[ndarray | None, int]]:
     """
-    Generator that performs many steps
+    Generator der viele Schritte der Iteration durchführt.
+    Diese Funktion dient als Wrapper für iter_step, um die Iteration zu vereinfachen.
+
+    :param matrices: Funktion, die die Matrizen M und nb berechnet
+    :param a: Matrix A
+    :param x: Startvektor
+    :param b: Vektor b
+    :param w: Relaxationsfaktor
+    :return: Generator, der bei jedem Aufruf einen Schritt der Iteration durchführt
     """
     set_matrices = isinstance(matrices, tuple)
 
@@ -54,7 +65,7 @@ def iter_steps_generatordef(matrices: Callable[[np.ndarray, np.ndarray, np.ndarr
 
 def n_steps_of_generator(generator, n: int) -> np.ndarray:
     """
-    Performs n steps of a generator, returns the last result and closes the generator
+    Führt n Schritte des Generators durch, schließt diesen und gibt das Ergebnis zurück.
     """
     for _ in range(n - 1):
         next(generator)

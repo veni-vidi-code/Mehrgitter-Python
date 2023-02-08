@@ -12,6 +12,14 @@ from implementations.Gitter import linear_prolongation, linear_restriction
 def ggk_matrices(stufenindex_l: int, *, a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
                  prolongation: Callable[[int], np.ndarray] = linear_prolongation,
                  restriction: Callable[[int], np.ndarray] = linear_restriction):
+    """
+    Gibt Funktion zurück, die ggk-matrizen berechnet
+
+    :param stufenindex_l: Gitterstufe
+    :param a_func: Funktion die a_l berechnet
+    :param prolongation: Funktion die Prolongationsmatrix angibt
+    :param restriction: Funktion die Restriktionsmatrix angibt
+    """
     p_l = prolongation(stufenindex_l)
     r_l = restriction(stufenindex_l)
     a_l_minus_1 = a_func(stufenindex_l - 1)
@@ -37,6 +45,16 @@ def ggk_step(stufenindex_l: int, u: np.ndarray, f: np.ndarray, *,
              a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
              prolongation: Callable[[int], np.ndarray] = linear_prolongation,
              restriction: Callable[[int], np.ndarray] = linear_restriction):
+    """
+    Führt einen ggk-Schritt durch
+    Au=f
+
+    :param stufenindex_l: Gitterstufe
+    :param a_func: Funktion die A_l berechnet
+    :param prolongation: Funktion die Prolongationsmatrix angibt
+    :param restriction: Funktion die Restriktionsmatrix angibt
+    :return: Ergebnis des ggk-Schritts
+    """
     fun = ggk_matrices(stufenindex_l, a_func=a_func, prolongation=prolongation, restriction=restriction)
     m, nb = fun(None, f, None)
     return iter_step(m, nb, u)
@@ -45,8 +63,8 @@ def ggk_step(stufenindex_l: int, u: np.ndarray, f: np.ndarray, *,
 def ggk_steps(stufenindex_l: int, u: np.ndarray, f: np.ndarray, *,
               a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l):
     """
-    Generator to perform many ggk steps
-    (You should generrally not do more than one step)
+    Generator um mehrere ggk-Schritte durchzuführen
+    (Sie sollten im allgemeinen nicht mehr als einen Schritt durchführen)
     """
     return iter_steps_generatordef((ggk_matrices(stufenindex_l, a_func=a_func)), None, u, f, 1)  # type: ignore
 
@@ -57,7 +75,7 @@ def n_ggk_steps(stufenindex_l: int,
                 n: int, *,
                 a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l):
     """
-    (You should generrally not do more than one step)
+    (Sie sollten im allgemeinen nicht mehr als einen Schritt durchführen)
     """
     generator = ggk_steps(stufenindex_l, u, f, a_func=a_func)
     return n_steps_of_generator(generator, n)
@@ -68,7 +86,7 @@ def ggk_Psi_l(stufenindex_l: int, e: np.ndarray, *,
               prolongation: Callable[[int], np.ndarray] = linear_prolongation,
               restriction: Callable[[int], np.ndarray] = linear_restriction):
     """
-    Returns the ggk correction for the solution u
+    Gibt die GGK Korrektur für die Lösung u bzw e zurück (f = 0)
     """
     return ggk_step(stufenindex_l, e, np.zeros_like(e), a_func=a_func, prolongation=prolongation,
                     restriction=restriction)

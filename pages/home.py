@@ -5,6 +5,9 @@ from dash import html
 from pages.cache import cache
 
 dash.register_page(__name__, path='/', order=0, name='Home')
+"""
+Übersichtsseite
+"""
 
 
 @cache.memoize(timeout=600)

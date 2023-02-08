@@ -2,7 +2,6 @@ from typing import TypedDict
 
 import dash
 import dash_bootstrap_components as dbc
-import dash_daq as daq
 
 import os
 
@@ -11,6 +10,9 @@ from dash import html, dcc
 from pages.cache import cache
 
 dash.register_page(__name__, name="Mehr zum Thema", order=9)
+"""
+Lädt die Dateien aus assets/read_more und zeigt sie als Markdown mit Mathjax an.
+"""
 
 
 class ReadMore(TypedDict):

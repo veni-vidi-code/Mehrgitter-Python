@@ -1,6 +1,6 @@
 import dash
 import plotly.graph_objects as go
-from dash import html, dcc, callback, Input, Output, State
+from dash import html, dcc, callback, Input, Output
 
 from Utils.components import stufenindex_l_check
 from implementations.step_visualization import mehrgitterverfahren_visualization, \
@@ -11,6 +11,9 @@ import dash_bootstrap_components as dbc
 import dash_daq as daq
 
 dash.register_page(__name__, name="Stufenentwicklung Mehrgitterverfahren", order=8)
+"""
+Visualisiert die Stufenentwicklung des Mehrgitterverfahrens sowie des vollständigen Mehrgitterverfahrens.
+"""
 
 max_l = 4
 max_gamma = 3
