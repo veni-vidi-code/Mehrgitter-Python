@@ -1,4 +1,4 @@
-# Worum es sich bei diesem projekt handelt
+# Worum es sich bei diesem Projekt handelt
 
 Dieses Projekt ist im Zuge einer Seminararbeit zur numerischen Analysis im Bereich des Mathematikstudiums der RWTH entstanden. 
 Es implementiert ein einfaches geometrisches Mehrgitterverfahren sowie einige vorhergehende Verfahren in Python und visualisiert 
