@@ -1,4 +1,4 @@
-from typing import Callable, Tuple, Optional
+from typing import Callable, Tuple, Optional, Generator, Any
 
 import numpy as np
 
@@ -16,7 +16,23 @@ def zweigitter_steps(stufenindex_l: int, v1: int, v2: int, x: np.ndarray, y: np.
                      w1: float = 1, w2: float = 1, *,
                      a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
                      prolongation: Callable[[int], np.ndarray] = linear_prolongation,
-                     restriction: Callable[[int], np.ndarray] = linear_restriction):
+                     restriction: Callable[[int], np.ndarray] = linear_restriction)\
+        -> Generator[np.ndarray, Any, tuple[Any, int]]:
+    """
+    Generator um mehrere Zweigitter-Schritte auszuführen
+
+    :param stufenindex_l: Gitterstufe (Anfang)
+    :param v1: Anzahl Vorglätterungsschritte
+    :param v2: Anzahl Nachglätterungsschritte
+    :param psi_vor_matrice: Vorglätter
+    :param psi_nach_matrice: Nachglätter
+    :param w1: Vorglätterrelaxionsparameter
+    :param w2: Nachglätterrelaxionsparameter
+    :param a_func: A Matrix, default: dirichlet
+    :param prolongation: prolongation matrix, default: linear
+    :param restriction: restriction matrix, default: linear
+    :param x: Näherungslösung. Wird nicht benötigt, aber wird hier auf korrekte Dimension geprüft
+    """
     a_l = a_func(stufenindex_l)
     if psi_nach_matrice is None:
         psi_nach_matrice = psi_vor_matrice
@@ -45,6 +61,21 @@ def n_zweigitter_steps(stufenindex_l: int, v1: int, v2: int, x: np.ndarray, y: n
                        a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
                        prolongation: Callable[[int], np.ndarray] = linear_prolongation,
                        restriction: Callable[[int], np.ndarray] = linear_restriction):
+    """
+    Führt n Zweigitter-Schritte aus
+
+    :param stufenindex_l: Gitterstufe (Anfang)
+    :param v1: Anzahl Vorglätterungsschritte
+    :param v2: Anzahl Nachglätterungsschritte
+    :param psi_vor_matrice: Vorglätter
+    :param psi_nach_matrice: Nachglätter
+    :param w1: Vorglätterrelaxionsparameter
+    :param w2: Nachglätterrelaxionsparameter
+    :param a_func: A Matrix, default: dirichlet
+    :param prolongation: prolongation matrix, default: linear
+    :param restriction: restriction matrix, default: linear
+    :param x: Näherungslösung. Wird nicht benötigt, aber wird hier auf korrekte Dimension geprüft
+    """
     generator = zweigitter_steps(stufenindex_l, v1, v2, x, y, psi_vor_matrice, psi_nach_matrice, w1, w2,
                                  a_func=a_func, prolongation=prolongation, restriction=restriction)
     return n_steps_of_generator(generator, n)
@@ -60,7 +91,8 @@ def zweigitter_step(stufenindex_l: int, v1: int, v2: int, x: np.ndarray, y: np.n
                     prolongation: Callable[[int], np.ndarray] = linear_prolongation,
                     restriction: Callable[[int], np.ndarray] = linear_restriction):
     """
-    This is just a wrapper around n_zweigitter_steps to provide same interface as other methods
+    Hierbei handelt es sich um einen Wrapper um n_zweigitter_steps, um die gleiche Schnittstelle wie
+    die anderen Methoden zu bieten
     """
     return n_zweigitter_steps(stufenindex_l, v1, v2, x, y, 1, psi_vor_matrice, psi_nach_matrice, w1, w2,
                               a_func=a_func, prolongation=prolongation, restriction=restriction)

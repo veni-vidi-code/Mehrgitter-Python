@@ -1,3 +1,10 @@
+"""
+Dient zum Vergleich der verschiedenen Verfahren
+
+Es kann ggf erforderlich sein einen Ordner "benchmark-results" anzulegen
+(Im selben Ordner wie das Skript)
+"""
+
 import time
 
 import numpy as np

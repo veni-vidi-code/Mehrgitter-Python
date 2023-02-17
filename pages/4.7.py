@@ -8,6 +8,10 @@ from implementations import dirichlect_ndarrays
 from implementations.helpers import N_l
 
 dash.register_page(__name__, name="Eigenwerte", order=1)
+"""
+Eigenwerte der Iterationsmatrix des gedämpften Jacobi-Verfahrens für
+die Dirichlet-Randbedingung
+"""
 
 layout = html.Div(children=[
     html.H1(children='Eigenwerte Iterationsmatrix'),

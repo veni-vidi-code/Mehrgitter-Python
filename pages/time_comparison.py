@@ -10,6 +10,9 @@ from implementations.helpers import N_l
 from pages.cache import cache
 
 dash.register_page(__name__, name="Laufzeitvergleich", order=7)
+"""
+Lädt Benchmarkergebnisse und stellt diese in einem Vergleich dar.
+"""
 
 # results from book (ISBN 978-3-658-07200-1)
 book_results = {

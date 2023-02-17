@@ -11,6 +11,10 @@ from pages.cache import cache
 
 dash.register_page(__name__, name="Anzahl Iterationen", order=2)
 
+"""
+Vergleicht die Anzahl der Iterationen für die verschiedenen Verfahren bis gewisses res. erreicht ist.
+"""
+
 layout = html.Div(children=[
     html.H1(children='Anzahl Iterationen'),
     html.Div([

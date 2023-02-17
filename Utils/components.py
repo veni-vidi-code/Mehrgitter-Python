@@ -1,3 +1,7 @@
+"""
+Diese Datei enthält einige häufiger verwendete Komponenten für die Seite, die in mehreren Dateien verwendet werden.
+"""
+
 import dash_bootstrap_components as dbc
 import dash_daq as daq
 from dash import dcc, html, Output, Input, State

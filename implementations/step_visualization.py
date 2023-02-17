@@ -17,10 +17,15 @@ class MG_VIS_Matrizes(Enum):
             return f"$${self.name}$$"
 
 
-def mehrgitterverfahren_visualization(stufenindex_l: int, gamma: int, rec=None) -> tuple[
-    list[int], list[MG_VIS_Matrizes]]:
+def mehrgitterverfahren_visualization(stufenindex_l: int, gamma: int, rec=None) \
+        -> tuple[list[int], list[MG_VIS_Matrizes]]:
     """
-    :param rec: allows to use a cached version of this function
+    Gibt die Reihenfolge der Gitterstufen und die Matrizen, die auf diesen angewendet werden, zurück
+    (Mehrgitterverfahren)
+
+    :param stufenindex_l: Gitterstufe
+    :param gamma: \\gamma
+    :param rec: Erlaubt die Nutzung einer gecachten Version der Funktion
     """
     if stufenindex_l == 0:
         return [0, 0], [MG_VIS_Matrizes.E]
@@ -44,8 +49,17 @@ def mehrgitterverfahren_visualization(stufenindex_l: int, gamma: int, rec=None) 
 
 
 def vollstaendiges_mehrgitterverfahren_visualization(stufenindex_l: int, gamma: int,
-                                                     mehrgitter_visualization=mehrgitterverfahren_visualization) -> \
-        tuple[list[int], list[MG_VIS_Matrizes]]:
+                                                     mehrgitter_visualization=mehrgitterverfahren_visualization) \
+        -> tuple[list[int], list[MG_VIS_Matrizes]]:
+    """
+    Gibt die Reihenfolge der Gitterstufen und die Matrizen, die auf diesen angewendet werden, zurück
+    (Vollständiges Mehrgitterverfahren)
+
+    :param stufenindex_l: Gitterstufe
+    :param gamma: \\gamma
+    :param mehrgitter_visualization: Optional: Vis. für das Mehrgitterverfahren
+    :return:
+    """
     if stufenindex_l == 0:
         return [0, 0], [MG_VIS_Matrizes.E]
     else:
@@ -54,7 +68,7 @@ def vollstaendiges_mehrgitterverfahren_visualization(stufenindex_l: int, gamma: 
         for current in range(1, stufenindex_l + 1):
             res_matrizes.extend([MG_VIS_Matrizes.P, MG_VIS_Matrizes.G_v2])
             res_levels.extend([current, current])
-        a, b = mehrgitterverfahren_visualization(stufenindex_l, gamma)
+        a, b = mehrgitter_visualization(stufenindex_l, gamma)
         a.pop(0)
         res_levels.extend(a)
         res_matrizes.extend(b)

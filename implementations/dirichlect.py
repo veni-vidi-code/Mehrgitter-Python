@@ -6,9 +6,21 @@ from implementations.gaussseidel import gauss_seidel_steps, gauss_seidel_matrice
 from implementations.jacobi import jacobi_steps, jacobi_matrices
 from implementations.zweigitter import zweigitter_steps
 
+from typing import Generator
+
 
 def get_dirichlect_generator(stufenindex_l: int, mode: int, w: float, startwith: np.ndarray = None,
-                             iterator: str = "jacobi"):
+                             iterator: str = "jacobi") -> Generator:
+    """
+    Erstellt Generator der fouriermode / startvektor glättet
+
+    :param stufenindex_l: Gitterstufe
+    :param mode: j
+    :param w: (1/2) Dämpfungsparameter
+    :param startwith: Startvektor, überschreibt Fouriermodus
+    :param iterator: Methode, aus jacobi, gausseidel, zweigitter-jacobi
+    :return: Generator
+    """
     if startwith is None:
         e = fourier_mode(stufenindex_l, mode)
     else:

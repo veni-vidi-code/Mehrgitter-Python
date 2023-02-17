@@ -1,6 +1,6 @@
 import sys
 from queue import LifoQueue
-from typing import Callable, Optional, Tuple
+from typing import Callable, Optional, Tuple, Generator, Any, Union
 
 import numpy as np
 
@@ -20,6 +20,24 @@ def mehrgitterverfahren_rekursiv(stufenindex_l: int, v1: int, v2: int, u: np.nda
                                  a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
                                  prolongation: Callable[[int], np.ndarray] = linear_prolongation,
                                  restriction: Callable[[int], np.ndarray] = linear_restriction) -> np.ndarray:
+    """
+    Führt einen Schritt des Mehrgitterverfahrens aus
+
+    :param stufenindex_l: Gitterstufe (Anfang)
+    :param v1: Anzahl Vorglätterungsschritte
+    :param v2: Anzahl Nachglätterungsschritte
+    :param u: Au = f
+    :param f: Au = f
+    :param psi_vor_matrice: Vorglätter
+    :param psi_nach_matrice: Nachglätter
+    :param w1: Vorglätterrelaxionsparameter
+    :param w2: Nachglätterrelaxionsparameter
+    :param gamma: V Zyklus / W Zyklus ...
+    :param a_func: A Matrix, default: dirichlet
+    :param prolongation: prolongation matrix, default: linear
+    :param restriction: restriction matrix, default: linear
+    :return: Ergebnis des Schrittes
+    """
     if stufenindex_l >= rec_limit:
         raise RecursionError("Recursion limit exceeded")  # We know it will reach this anyway, so we can save some time
     if stufenindex_l == 0:
@@ -53,7 +71,29 @@ def mehgitterverfaren_steps(stufenindex_l: int, v1: int, v2: int, u: np.ndarray,
                             w1: float = 1, w2: float = 1, gamma: int = 1, *,
                             a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
                             prolongation: Callable[[int], np.ndarray] = linear_prolongation,
-                            restriction: Callable[[int], np.ndarray] = linear_restriction):
+                            restriction: Callable[[int], np.ndarray] = linear_restriction) \
+        -> Generator[np.ndarray, Any, Tuple[np.ndarray | None, int]]:
+    """
+    Führt mehrere Schritte des Mehrgitterverfahrens aus.
+
+    Bietet keinen Laufzeitvorteil gegenüber mehreren Aufrufen von mehrgitterverfahren_rekursiv, aber es ist einfacher zu
+    nutzen.
+
+    :param stufenindex_l: Gitterstufe (Anfang)
+    :param v1: Anzahl Vorglätterungsschritte
+    :param v2: Anzahl Nachglätterungsschritte
+    :param u: Au = f
+    :param f: Au = f
+    :param psi_vor_matrice: Vorglätter
+    :param psi_nach_matrice: Nachglätter
+    :param w1: Vorglätterrelaxionsparameter
+    :param w2: Nachglätterrelaxionsparameter
+    :param gamma: V Zyklus / W Zyklus ...
+    :param a_func: A Matrix, default: dirichlet
+    :param prolongation: prolongation matrix, default: linear
+    :param restriction: restriction matrix, default: linear
+    :return: Generator
+    """
     x = u.copy()
     total_steps = 0
     try:
@@ -73,7 +113,20 @@ def get_start_vector_generator(stufenindex_l: int, v: int, f: np.ndarray,
                                a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
                                prolongation: Callable[[int], np.ndarray] = linear_prolongation,
                                restriction: Callable[[int], np.ndarray] = linear_restriction
-                               ) -> np.ndarray:
+                               ) -> Generator[np.ndarray, Any, Union[float, np.ndarray]]:
+    """
+    Generiert den Startvektor für das vollständige Mehrgitterverfahren.
+    Gibt den dazugehörigen Generator zurück.
+
+    :param stufenindex_l: Gitterstufe (Anfang)
+    :param v: Anzahl Glätterungsschritte
+    :param f: Au = f
+    :param smoother: Glätter
+    :param w: Glätterrelaxionsparameter
+    :param a_func: A Matrix, default: dirichlet
+    :param prolongation: prolongation matrix, default: linear
+    :param restriction: restriction matrix, default: linear
+    """
     fs = LifoQueue()
     temp_f = f
     fs.put_nowait(f)
@@ -96,8 +149,23 @@ def get_start_vector(stufenindex_l: int, v: int, f: np.ndarray,
                                         Tuple[np.ndarray, np.ndarray]],
                      w: float = 1, *,
                      a_func: Callable[[int], np.ndarray] = dirichlect_randwert_a_l,
-                     prolongation: Callable[[int], np.ndarray] = linear_prolongation) -> np.ndarray:
-    gen = get_start_vector_generator(stufenindex_l, v, f, smoother, w, a_func=a_func, prolongation=prolongation)
+                     prolongation: Callable[[int], np.ndarray] = linear_prolongation,
+                     restriction: Callable[[int], np.ndarray] = linear_restriction) -> np.ndarray:
+    """
+    Generiert den Startvektor für das vollständige Mehrgitterverfahren.
+
+    :param stufenindex_l: Gitterstufe (Anfang)
+    :param v: Anzahl Glätterungsschritte
+    :param f: Au = f
+    :param smoother: Glätter
+    :param w: Glätterrelaxionsparameter
+    :param a_func: A Matrix, default: dirichlet
+    :param prolongation: prolongation matrix, default: linear
+    :param restriction: restriction matrix, default: linear
+    """
+
+    gen = get_start_vector_generator(stufenindex_l, v, f, smoother, w, a_func=a_func, prolongation=prolongation,
+                                     restriction=restriction)
     r = None
     for _ in gen:
         r = _
