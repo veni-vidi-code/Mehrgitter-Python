@@ -11,7 +11,7 @@ if not os.path.exists(asset_image_path):
     os.mkdir(asset_image_path)
 img_format = 'pdf'
 pio.kaleido.scope.default_format = img_format
-pio.kaleido.scope.default_width = 425
+pio.kaleido.scope.default_width = 425 * 2
 pio.kaleido.scope.default_scale = 1
 
 
