@@ -6,6 +6,7 @@ from dash import html, dcc, callback, Input, Output, State, ctx
 from Utils.components import snipping_switch, w_check, stufenindex_l_check, fig_check
 from implementations import dirichlect_ndarrays
 from implementations.helpers import N_l
+from Utils.export import save_image
 
 dash.register_page(__name__, name="Eigenwerte", order=1)
 """
@@ -72,3 +73,8 @@ def add_eigenvalues(n_clicks, stufenindex_l, w, fig):
 dash.clientside_callback("function (value) {if (value) {return null} else {return 1e-6}}",
                          Output('w', 'step'),
                          Input('snapping', 'on'))
+
+
+@callback(Output('eigenvalues', 'className'), Input('eigenvalues', 'figure'))
+def save_figure(fig):
+    return save_image(fig, "4.7")

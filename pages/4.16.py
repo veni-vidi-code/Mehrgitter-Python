@@ -4,6 +4,7 @@ from dash import html, dcc, callback, Input, Output, State
 
 import implementations.dirichlect_ndarrays as dirichlect
 from Utils.components import stufenindex_l_check
+from Utils.export import save_image
 from implementations.helpers import N_l
 from implementations.ggk import ggk_Psi_l
 from pages.cache import cache
@@ -51,3 +52,8 @@ def change_j_max(stufenindex_l, j):
         return n, min(n, j), {"placement": "bottom", "always_visible": True}, None
     else:
         return n, min(n, j), None, {}
+
+
+@callback(Output('fourier-modes-4-16', 'className'), Input('fourier-modes-4-16', 'figure'))
+def save_figure(fig):
+    return save_image(fig, "4.16")

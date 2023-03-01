@@ -6,6 +6,7 @@ from dash import html, dcc, callback, Input, Output, State, ALL
 from dash.exceptions import PreventUpdate
 
 from Utils.components import snipping_switch, w_check, stufenindex_l_check, vec_check
+from Utils.export import save_image
 from implementations.dirichlect import get_dirichlect_generator
 from implementations.gaussseidel import gauss_seidel_matrices
 from implementations.helpers import N_l
@@ -155,3 +156,8 @@ dash.clientside_callback("function (n, is_open) {if (n) {return !is_open;} else 
                          Output("collapse-4-9", "is_open"),
                          Input("collapse-button-4-9", "n_clicks"),
                          State("collapse-4-9", "is_open"))
+
+
+@callback(Output('iter-graph-4-9', 'className'), Input('iter-graph-4-9', 'figure'))
+def save_figure(fig):
+    return save_image(fig, "4.9")

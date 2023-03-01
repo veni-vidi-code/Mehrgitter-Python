@@ -6,6 +6,7 @@ import dash_bootstrap_components as dbc
 
 import plotly.express as px
 
+from Utils.export import save_image
 from implementations.helpers import N_l
 from pages.cache import cache
 
@@ -118,3 +119,8 @@ def update_table_bar(value):
         return jacobi_fig()
     else:
         return gauss_seidel_fig()
+
+
+@callback(Output('bar-laufzeitvergleich', 'className'), Input('bar-laufzeitvergleich', 'figure'))
+def save_figure(fig):
+    return save_image(fig, "bar-laufzeitvergleich")

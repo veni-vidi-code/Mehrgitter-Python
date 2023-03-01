@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ctx
 
 from Utils.components import snipping_switch, w_check, stufenindex_l_check, fig_check
+from Utils.export import save_image
 from implementations.dirichlect import get_dirichlect_generator
 from implementations.helpers import N_l
 from pages.cache import cache
@@ -97,3 +98,8 @@ def add_traces(n_clicks, stufenindex_l, w, fig, mode):
 dash.clientside_callback("function (value) {if (value) {return null} else {return 1e-6}}",
                          Output('w-4-8', 'step'),
                          Input('snapping', 'on'))
+
+
+@callback(Output('iter-graph-4-8', 'className'), Input('iter-graph-4-8', 'figure'))
+def save_figure(fig):
+    return save_image(fig, "4.8")

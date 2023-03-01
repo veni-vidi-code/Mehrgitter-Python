@@ -3,6 +3,7 @@ import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output
 
 from Utils.components import stufenindex_l_check
+from Utils.export import save_image
 from implementations.step_visualization import mehrgitterverfahren_visualization, \
     vollstaendiges_mehrgitterverfahren_visualization
 from pages.cache import cache
@@ -60,3 +61,8 @@ def update_figure(l, gamma, vst):
     for i in range(len(b)):
         fig.add_annotation(x=i + 1 / 2, y=(a[i] + a[i + 1]) / 2, text=str(b[i]), showarrow=False, yshift=10)
     return fig
+
+
+@callback(Output('s-vis-graph', 'className'), Input('s-vis-graph', 'figure'))
+def save_figure(fig):
+    return save_image(fig, "step_vis")

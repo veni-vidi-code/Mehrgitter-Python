@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 from dash import html, dcc, callback, Input, Output, State, ALL
 
 from Utils.components import snipping_switch, stufenindex_l_check, w_check, vec_check
+from Utils.export import save_image
 from implementations.Gitter import standard_schrittweitenfolge
 from implementations.gaussseidel import gauss_seidel_matrices
 from implementations.helpers import N_l
@@ -215,3 +216,8 @@ dash.clientside_callback("function (methode) {return methode == 'Vollst. MGM';}"
 dash.clientside_callback("function (methode) {return methode == 'ZGM';}",
                          Output("gamma-div-4-22", "hidden"),
                          Input('methode-4-22', 'value'))
+
+
+@callback(Output('graph-4-22', 'className'), Input('graph-4-22', 'figure'))
+def save_figure(fig):
+    return save_image(fig, "4.22")
