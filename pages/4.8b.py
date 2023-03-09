@@ -17,7 +17,7 @@ Vergleicht die Anzahl der Iterationen für die verschiedenen Verfahren bis gewis
 """
 
 layout = html.Div(children=[
-    html.H1(children='Anzahl Iterationen'),
+    html.H1(children='Anzahl Iterationenb'),
     html.Div([
         snipping_switch,
         "Gitter (l): ",
@@ -102,4 +102,4 @@ dash.clientside_callback("function (value) {if (value) {return null} else {retur
 
 @callback(Output('iter-graph-4-8b', 'className'), Input('iter-graph-4-8b', 'figure'))
 def save_figure(fig):
-    return save_image(fig, "4.8")
+    return save_image(fig, "4.8b")
