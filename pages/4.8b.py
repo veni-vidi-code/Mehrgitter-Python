@@ -10,7 +10,7 @@ from implementations.dirichlect import get_dirichlect_generator
 from implementations.helpers import N_l
 from pages.cache import cache
 
-dash.register_page(__name__, name="Anzahl Iterationen", order=2)
+dash.register_page(__name__, name="Anzahl Iterationenb", order=10)
 
 """
 Vergleicht die Anzahl der Iterationen für die verschiedenen Verfahren bis gewisses res. erreicht ist.
@@ -21,7 +21,7 @@ layout = html.Div(children=[
     html.Div([
         snipping_switch,
         "Gitter (l): ",
-        dcc.Slider(1, 5, 1, value=3, id="l-4-8"),
+        dcc.Slider(1, 5, 1, value=3, id="l-4-8b"),
         "Dämpfung (w): ",
         dcc.Slider(1e-6, 0.5, step=1e-6, marks={
             1: '1',
@@ -29,17 +29,17 @@ layout = html.Div(children=[
             1 / 3: '1/3',
             1 / 4: '1/4',
             1 / 8: '1/8'
-        }, value=0.5, id="w-4-8", tooltip={"placement": "bottom"}),
+        }, value=0.5, id="w-4-8b", tooltip={"placement": "bottom"}),
         dbc.Button(
             "Hinzufügen",
-            id="submit-button-4-8",
+            id="submit-button-4-8b",
             color="info",
             outline=True,
             n_clicks=0,
         ),
     ]),
     html.Br(),
-    dcc.Graph(id='iter-graph-4-8', mathjax=True),
+    dcc.Graph(id='iter-graph-4-8b', mathjax=True),
 ])
 
 
@@ -68,20 +68,20 @@ def _add_iters_trace(stufenindex_l, w, fig, mode=""):
     x, y = _iter_trace(stufenindex_l, w, mode)
     fig.add_trace(
         go.Scatter(x=x, y=y, mode='lines+markers', name=f'w={w}, {"Jacobi" if mode == "jacobi" else "Gauss-Seidel"}'))
-    #x, y = _iter_trace(stufenindex_l, w, "zweigitter-" + mode)
-    #fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers',
-    #                         name=f'w={w}, Zweigitter {"Jacobi" if mode == "jacobi" else "Gauss-Seidel"}'))
+    x, y = _iter_trace(stufenindex_l, w, "zweigitter-" + mode)
+    fig.add_trace(go.Scatter(x=x, y=y, mode='lines+markers',
+                             name=f'w={w}, Zweigitter {"Jacobi" if mode == "jacobi" else "Gauss-Seidel"}'))
 
 
-@callback(Output('iter-graph-4-8', 'figure'), Output('w-4-8', 'value'),
-          Input('submit-button-4-8', 'n_clicks'), Input('l-4-8', 'value'),
-          State('w-4-8', 'value'), State('iter-graph-4-8', 'figure'), Input('tabs-jacobi-gaussseidel-switch', 'value'))
+@callback(Output('iter-graph-4-8b', 'figure'), Output('w-4-8b', 'value'),
+          Input('submit-button-4-8b', 'n_clicks'), Input('l-4-8b', 'value'),
+          State('w-4-8b', 'value'), State('iter-graph-4-8b', 'figure'), Input('tabs-jacobi-gaussseidel-switch', 'value'))
 def add_traces(n_clicks, stufenindex_l, w, fig, mode):
     w_check(w, 0, 0.5)
     stufenindex_l_check(stufenindex_l, 1, 5)
     fig_check(fig)
 
-    if ctx.triggered_id is not None and ctx.triggered_id.startswith('submit-button-4-8'):
+    if ctx.triggered_id is not None and ctx.triggered_id.startswith('submit-button-4-8b'):
         fig = go.Figure(fig)
         _add_iters_trace(stufenindex_l, w, fig, mode)
         return fig, w
@@ -96,10 +96,10 @@ def add_traces(n_clicks, stufenindex_l, w, fig, mode):
 # Clientside callbacks
 
 dash.clientside_callback("function (value) {if (value) {return null} else {return 1e-6}}",
-                         Output('w-4-8', 'step'),
+                         Output('w-4-8b', 'step'),
                          Input('snapping', 'on'))
 
 
-@callback(Output('iter-graph-4-8', 'className'), Input('iter-graph-4-8', 'figure'))
+@callback(Output('iter-graph-4-8b', 'className'), Input('iter-graph-4-8b', 'figure'))
 def save_figure(fig):
     return save_image(fig, "4.8")
