@@ -52,8 +52,8 @@ def find_needed_iters(stufenindex_l, j, w: float = 0.5, limit: float = 1e-2, mod
         e = next(generator)
         eps = np.linalg.norm(e)
         i += 1
-        if i > 500:
-            return 0
+        #if i > 500:
+        #    return 0
     return i
 
 
